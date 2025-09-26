@@ -1,0 +1,302 @@
+---
+title: "Activity_Assignment"
+output: html_document
+date: "2025-09-23"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+setwd("C:/Users/Thang/OneDrive/Desktop/Rexamples/Activity")
+ActivityData <- read.csv(file = "CPAPAdherence_Data.csv")
+
+#View data 
+View(ActivityData)
+dim(ActivityData)
+head(ActivityData)
+str(ActivityData)
+
+#1. Check dichotomous variables (race and sex)
+dichotomous_vars <- c("race_black", "race_white", "race_other", "sex")
+error_log <- data.frame(Row = integer(0), Variable = character(0), Value = character(0), Issue = character(0))
+for(var in dichotomous_vars){
+  for(i in 1:nrow(ActivityData)){
+    val <- as.character(ActivityData[i, var])
+    # Trim spaces
+    val_trim <- trimws(val)
+    # Check if exactly "0" or "1"
+    if(!val_trim %in% c("0","1")){
+      error_log <- rbind(error_log, data.frame(
+        Row=i, Variable=var, Value=val, Issue="Invalid dichotomous value"
+      ))
+    }
+  }
+}
+#2. Check categorical variables
+# -----------------------------
+# Education: only "<= high school" or "> high school"
+allowed_education <- c("<= high school", "> high school")
+for(i in 1:nrow(ActivityData)){
+  val <- as.character(ActivityData[i, "education"])
+  if(!val %in% allowed_education){
+    error_log <- rbind(error_log, data.frame(
+      Row=i, Variable="education", Value=val, Issue="Invalid education value"
+    ))
+  }
+}
+
+# Ethnicity: "Hispanic or Latino" or "Not Hispanic or Latino"
+allowed_ethnicity <- c("Hispanic or Latino", "Not Hispanic or Latino")
+for(i in 1:nrow(ActivityData)){
+  val <- as.character(ActivityData[i, "ethnicity"])
+  if(!val %in% allowed_ethnicity){
+    error_log <- rbind(error_log, data.frame(
+      Row=i, Variable="ethnicity", Value=val, Issue="Invalid ethnicity value"
+    ))
+  }
+}
+#3. Check continuous variables
+# -----------------------------
+continuous_checks <- list(
+  age=c(18,100),
+  ahi=c(0,Inf),
+  ess=c(0,24),
+  mmse=c(0,30),
+  avg_daily_cpap=c(0,Inf)
+)
+
+for(var in names(continuous_checks)){
+  rng <- continuous_checks[[var]]
+  for(i in 1:nrow(ActivityData)){
+    val <- ActivityData[i, var]
+    if(is.na(val) || !is.numeric(val)){
+      error_log <- rbind(error_log, data.frame(
+        Row=i, Variable=var, Value=val, Issue="Non-numeric or missing"
+      ))
+    } else if(val < rng[1] | val > rng[2]){
+      error_log <- rbind(error_log, data.frame(
+        Row=i, Variable=var, Value=val, Issue="Out-of-range"
+      ))
+    }
+  }
+}
+
+#4. Optional: Check race mutual exclusivity
+# -----------------------------
+# Convert race columns to numeric first, to make sure that the sum of race in each row would not be larger than  1
+race_vars <- c("race_black","race_white","race_other")
+ActivityData[, race_vars] <- lapply(ActivityData[, race_vars], function(x) as.numeric(as.character(x)))
+
+race_sum <- rowSums(ActivityData[, race_vars])
+invalid_race <- which(race_sum != 1)
+if(length(invalid_race) > 0){
+  for(i in invalid_race){
+    error_log <- rbind(error_log, data.frame(
+      Row=i, Variable=paste(race_vars, collapse="/"), 
+      Value=paste(ActivityData[i, race_vars], collapse="/"),
+      Issue="Race mutually exclusive violation"
+    ))
+  }
+}
+
+#5. Check duplicated row 
+
+all_duplicated_rows <- duplicated(ActivityData) | duplicated(ActivityData, fromLast = TRUE)
+
+
+ActivityData[all_duplicated_rows, ]
+
+for(i in which(all_duplicated_rows)) {
+  error_log <- rbind(error_log, data.frame(
+    Row = i, 
+    Variable = "Duplicate row", 
+    Value = paste(ActivityData[i, ], collapse = ", "),  # Các giá trị trong dòng trùng
+    Issue = "Duplicate row"
+  ))
+}
+
+#PRINT THE ERROR LOG HERE 
+print(error_log)
+
+#6. REPLACING ERRORS BY NA and DELETING DUPLICATEDUPLICATES
+
+#Age
+hist(x = ActivityData$age )
+testVec <- 1:100
+print(testVec <=100)
+sub1 <- which(testVec <=100)
+testVec[sub1]
+weirdages <- which(ActivityData$age > 100 )
+ActivityData$age[weirdages ]
+ActivityData$age[ActivityData$age > 100] <- NA
+hist(ActivityData$age)
+
+#ess
+hist(x = ActivityData$ess )
+testVec <- 0:24 
+print(testVec <=24)
+sub2 <- which(testVec <=24)
+testVec[sub2]
+weirdess <- which(ActivityData$ess > 24)
+ActivityData$ess [weirdess ]
+ActivityData$ess[ActivityData$ess > 24] <- NA
+hist(ActivityData$ess)
+
+#sex
+hist(x = ActivityData$sex )
+testVec <- 0:1  
+print(testVec <=1)
+sub3 <- which(testVec <=1)
+testVec[sub3]
+weirdsex <- which(ActivityData$sex> 1)
+ActivityData$sex [weirdsex]
+ActivityData$sex[ActivityData$sex > 1] <- NA
+hist(ActivityData$sex)
+
+#Education: replace the blank by NA
+
+ActivityData$education[ActivityData$education == ""] <- NA
+
+#Delete duplicates 
+ActivityData[duplicated(ActivityData), ]
+ActivityData <- ActivityData[!duplicated(ActivityData), ]
+
+#7.Use the 3 race variables to create a single race variable
+
+#Convert binary race variables to numeric
+
+ActivityData$race_white <- as.numeric(ActivityData$race_white)
+ActivityData$race_other <- as.numeric(ActivityData$race_other)
+ActivityData$race_black <- as.numeric(ActivityData$race_black)
+
+#Create a new race variable based on binary columns. This ensures that each individual is assigned a single race if only one binary variable is 1.
+ActivityData$race[ActivityData$race_black == 1] <- "Black"
+ActivityData$race[ActivityData$race_white == 1] <- "White"
+ActivityData$race[ActivityData$race_other == 1] <- "Other"
+
+#Convert race to a factor
+ActivityData$race <- factor(ActivityData$race, 
+                            levels = c("White", "Black", "Other"))
+#Check the distribution of race
+table(ActivityData$race, useNA = "ifany")
+head(ActivityData[, c("race_black", "race_white", "race_other", "race")])
+
+#8. Create a binary “adherence” variable from “avg_daily_cpap” using a cutoff of 4 or more hours to define “adherent” and less than 4 hours to define “non-adherent.”
+
+
+ActivityData$adherence <- ifelse(ActivityData$avg_daily_cpap >= 4, 
+                                 "Adherent", 
+                                 "Non-adherent")
+ActivityData$adherence <- factor(ActivityData$adherence, 
+                                 levels = c("Non-adherent", "Adherent"))
+table(ActivityData$adherence, useNA = "ifany")
+
+#I wanted to delete the columns for individual race: 
+ ActivityData <- subset(ActivityData, select = -c(race_black, race_white, race_other))
+ 
+#9. In a real-world situation, you should conduct preliminary analyses on all variables needed to answer your research question. For this assignment, select and create one appropriate data visualization for each of the following questions using base R or ggplot: 
+
+#9.1 
+
+library(ggplot2)
+ggplot(ActivityData, aes(x = ahi)) +
+  geom_histogram(aes(y = after_stat(density)),
+                 bins = 30, fill = "skyblue", color = "black", alpha = 0.7, na.rm = TRUE) +
+  geom_density(color = "red", linewidth = 1.2, na.rm = TRUE) +
+  labs(title = "Distribution of AHI",
+       x = "Apnea-Hypopnea Index (AHI)",
+       y = "Density") +
+  theme_minimal(base_size = 13)
+  
+#9.2
+
+ggplot(ActivityData, aes(x = adherence, y = age, fill = adherence)) +
+  geom_boxplot(outlier.colour = "red", outlier.shape = 16, na.rm = TRUE) +
+  geom_jitter(width = 0.15, alpha = 0.3, na.rm = TRUE) +
+  scale_fill_manual(values = c("Non-adherent" = "salmon", "Adherent" = "skyblue")) +
+  labs(title = "Age Distribution by Adherence Category",
+       x = "Adherence",
+       y = "Age") +
+  theme_minimal(base_size = 13) +
+  theme(legend.position = "none")
+#Calculate 5 number 
+  by(ActivityData$age, ActivityData$adherence, summary)
+  
+
+#9.3 
+
+ggplot(ActivityData, aes(x = race, fill = adherence)) +
+  geom_bar(position = "dodge") +
+  labs(title = "Race Distribution by Adherence Category",
+       x = "Race",
+       y = "Count") +
+  scale_fill_manual(values = c("Non-adherent" = "salmon",
+                               "Adherent" = "skyblue"))
+                               
+#9.4 
+
+ ggplot(ActivityData, aes(x = ess, y = mmse, color = adherence)) +
+  geom_point(alpha = 0.7, size = 2, na.rm = TRUE) +
+  scale_color_manual(values = c("Non-adherent" = "salmon", "Adherent" = "skyblue")) +
+  labs(title = "Relationship between ESS and MMSE by Adherence",
+       x = "Epworth Sleepiness Scale (ESS)",
+       y = "Mini-Mental State Exam (MMSE)",
+       color = "Adherence") +
+  theme_minimal(base_size = 13)
+  
+#if using plot()
+
+plot(ActivityData$ess, ActivityData$mmse,
+     xlab = "Epworth Sleepiness Scale (ESS)",
+     ylab = "Mini-Mental State Examination (MMSE)",
+     main = "Relationship between ESS and MMSE by Adherence",
+     pch = 16, col = "gray")
+#add point for adherent
+points(ActivityData$ess[ActivityData$adherence == "Adherent"], 
+       ActivityData$mmse[ActivityData$adherence == "Adherent"], 
+       col = "blue", pch = 16)
+#add point for nonadherent
+points(ActivityData$ess[ActivityData$adherence == "Non-adherent"], 
+       ActivityData$mmse[ActivityData$adherence == "Non-adherent"], 
+       col = "red", pch = 16)
+       
+#add legend
+legend("topright", legend = c("Adherent", "Non-adherent"),
+       col = c("blue", "red"), pch = 16)
+       
+#10. Create Table 1 for all variables in the dataset for the overall sample and stratify by adherence
+
+library(tableone)
+vars <- c("age", "sex", "ethnicity", "education",
+          "race", "ahi", "ess", "mmse", "avg_daily_cpap")
+table1 <- CreateTableOne(vars = vars, strata = "adherence",
+                         data = ActivityData, test = FALSE)
+print(table1, showAllLevels = TRUE)
+table1_df <- as.data.frame(print(table1, showAllLevels = TRUE))
+write.csv(table1_df, file = "Table1_df.csv", row.names = FALSE)
+head(table1_df)
+print(table1_df, showAllLevels = TRUE)
+
+legend_text <- "Values are presented as mean (SD) for continuous variables and n (%) for categorical variables."
+table1_df <- rbind(table1_df, Legend = legend_text)
+write.csv(table1_df, "Table1_with_legend.csv")
