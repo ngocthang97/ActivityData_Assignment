@@ -1,0 +1,500 @@
+---
+title: "Thang_Activity 33"
+output:
+  pdf_document:
+    latex_engine: xelatex
+    keep_tex: true
+    extra_dependencies: ["float"]
+  word_document: default
+date: "2025-11-09"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+## 1. Create a Table 1
+
+```{r}
+## Set global CRAN mirror
+options(repos = c(CRAN = "https://cran.rstudio.com/"))
+
+## Install the tableone package
+install.packages("tableone")
+## Load the required packages
+
+library(tableone)
+library(readxl)
+library(dplyr)
+library(janitor)
+library(knitr)
+
+# 1. Import dataset --------------------------------------------------------
+
+setwd("C:/Users/Thang/OneDrive/Documents/ActivityData_Assignment/Activity_3")
+data <- read_excel("SuicideRisk_Data.xlsx")
+
+# 2. Inspect initial structure --------------------------------------------
+
+str(data)
+
+# 3. Convert variables to correct types -----------------------------------
+
+data$RECORD_ID <- as.integer(data$RECORD_ID)
+data$AGE <- as.numeric(data$AGE)
+data$CESDR_TOTAL_SUM <- as.numeric(data$CESDR_TOTAL_SUM)
+data$SABCS_TOTAL_SUM <- as.numeric(data$SABCS_TOTAL_SUM)
+
+# Categorical variables
+
+data$GENDER <- factor(data$GENDER, levels = c("Female", "Male"))
+data$RACE <- factor(data$RACE, levels = c("White/Caucasian", "Asian", "Other"))
+data$ETHNICITY <- factor(data$ETHNICITY,
+levels = c("Hispanic/Latino", "Not Hispanic/Latino"))
+data$INCOME <- factor(data$INCOME,
+levels = c("<$30,000", "$30,000 - $50,000",
+"$51,000 - $75,000", "$76,000 - $100,000",
+">$100,000"))
+
+# Binary ACEs
+
+aces_vars <- paste0("ACES___", 1:10)
+data[aces_vars] <- lapply(data[aces_vars], factor,
+levels = c(0, 1), labels = c("No", "Yes"))
+
+# Suicide history variable (must exist before CreateTableOne)
+
+data$HX_SUICIDE <- factor(data$HX_SUICIDE,
+levels = c(1, 0),
+labels = c("History of Suicide", "No History of Suicide"))
+
+# Confirm it exists
+
+table(data$HX_SUICIDE)
+
+# 4. Define variables for Table 1 -----------------------------------------
+
+vars <- c("AGE", "GENDER", "RACE", "ETHNICITY", "INCOME",
+aces_vars, "CESDR_TOTAL_SUM", "SABCS_TOTAL_SUM")
+
+catVars <- c("GENDER", "RACE", "ETHNICITY", "INCOME", aces_vars)
+
+# 5. Create Table 1 --------------------------------------------------------
+
+table1 <- CreateTableOne(
+vars = vars,
+strata = "HX_SUICIDE",
+data = data,
+factorVars = catVars,
+addOverall = TRUE,
+test = TRUE
+)
+
+# 6. Convert to data frame -------------------------------------------------
+
+table1_df <- as.data.frame(print(table1, test = TRUE, smd = TRUE))
+
+# 7. Rename and reorder columns -------------------------------------------
+
+names(table1_df) <- c("Characteristic",
+"Total (n = 546)",
+"History of Suicide",
+"No History of Suicide",
+"P-value",
+"Effect Size")
+
+table1_df <- table1_df[, c("Characteristic",
+"Total (n = 546)",
+"History of Suicide",
+"No History of Suicide",
+"Effect Size",
+"P-value")]
+
+# 8. Display nicely --------------------------------------------------------
+library(kableExtra)
+
+kable(table1_df,
+      caption = "Table 1. Demographic and Mental Health Characteristics (n = 546)",
+      booktabs = TRUE,
+      align = "lccccc") %>%
+  kable_styling(full_width = FALSE) %>%
+  footnote(
+    general = "Continuous variables are shown as mean ± SD; categorical variables 
+    as n (%). P-values are derived from t-tests or Chi-square tests as 
+    appropriate. Effect Size = Standardized Mean Difference (SMD). 
+    ACEs = Adverse Childhood Experiences; CESDR = Center for Epidemiologic 
+    Studies Depression Scale; SABCS = Suicidal Affect–Behavior–Cognition Scale.",
+    general_title = "Note:",
+    threeparttable = TRUE
+  )
+
+
+```
+
+# Significant characteristic (p < 0.05)
+
+Participants with a history of suicide were significantly more likely to identify as Hispanic or Latino compared to those without a suicide history.
+This suggests that cultural or social factors associated with ethnicity may be related to suicide risk in this sample, although the result shows association—not causation.
+
+# Non-significant characteristic (p ≥ 0.05)
+
+The average age did not differ significantly between participants with and without a history of suicide.
+This means that age alone was not associated with suicide history in this study, and both groups had similar age distributions.
+
+## 2. This problem will focus on comparing suicidal risk (Suicidal Affect-Behavior-Cognition Scale [SABCS]) across race groups (White/Caucasian vs Asian vs Other).
+
+# A. Group comparison
+```{r}
+# Load necessary packages
+library(ggplot2)
+library(dplyr)
+install.packages("psych")
+library(psych)
+
+# 1. Descriptive statistics by race
+data %>%
+  group_by(RACE) %>%
+  summarise(
+    n = n(),
+    mean_SABCS = mean(SABCS_TOTAL_SUM, na.rm = TRUE),
+    sd_SABCS = sd(SABCS_TOTAL_SUM, na.rm = TRUE),
+    median_SABCS = median(SABCS_TOTAL_SUM, na.rm = TRUE),
+    IQR_SABCS = IQR(SABCS_TOTAL_SUM, na.rm = TRUE)
+  )
+
+# 2. Visualization: Boxplot of SABCS by Race
+ggplot(data, aes(x = RACE, y = SABCS_TOTAL_SUM, fill = RACE)) +
+  geom_boxplot() +
+  geom_jitter(width = 0.2, alpha = 0.4) +
+  theme_minimal() +
+  labs(title = "Distribution of Suicidal Risk (SABCS) Across Race Groups",
+       x = "Race Group", y = "SABCS Total Score") +
+  theme(legend.position = "none")
+
+# 3. Run one-way ANOVA
+anova_model <- aov(SABCS_TOTAL_SUM ~ RACE, data = data)
+summary(anova_model)
+
+```
+
+The distribution of suicidal risk scores (SABCS) showed similar patterns across the three racial groups.
+White/Caucasian participants had a mean score of 3.16 (SD = 4.69) with a median of 1 and an IQR of 4, indicating a right-skewed distribution with many low scores and a long tail of higher scores.
+Asian participants exhibited a slightly higher mean (3.65, SD = 5.38) and a median of 1, with an IQR of 5, suggesting greater spread and more variability in suicidal risk.
+Participants in the “Other” race category had the highest median (2) and an IQR of 5, with a mean of 3.71 (SD = 5.23), also reflecting a skewed distribution with several high-risk values.
+
+# B & C. Checking assumptions AND Post-hoc analysis
+
+```{r}
+# Check homogeneity of variances (Levene’s test)
+install.packages("car")
+library(car)
+leveneTest(SABCS_TOTAL_SUM ~ RACE, data = data)
+
+# Check normality of residuals
+shapiro.test(residuals(anova_model))
+
+# Visualization of residuals
+par(mfrow = c(1, 2))
+plot(anova_model, which = 1)  # Residuals vs Fitted
+plot(anova_model, which = 2)  # Q-Q plot
+par(mfrow = c(1, 1))
+```
+Levene’s test indicated that the assumption of homogeneity of variances was met (p = 0.54). However, the Shapiro–Wilk test showed that the ANOVA residuals were significantly non-normal (p < 0.001), suggesting substantial deviation from normality. Given the large sample size, ANOVA results remain relatively robust, but a non-parametric alternative (e.g., Kruskal–Wallis test) may provide a more appropriate assessment.
+
+The one-way ANOVA showed no statistically significant differences in mean suicidal risk (SABCS) across race groups (p > 0.05).
+Therefore, post-hoc pairwise comparisons were not conducted.
+
+#D AND E. Linear Regression AND CompaCompare/Contrast your Results
+
+```{r}
+# Make sure reference category is White/Caucasian
+data$RACE <- relevel(data$RACE, ref = "White/Caucasian")
+
+# Fit the linear regression model
+lm_model <- lm(SABCS_TOTAL_SUM ~ RACE, data = data)
+
+# Show summary
+summary(lm_model)
+```
+# Linear Regression Interpretation (plain language, alpha = 0.05)
+
+The linear regression model showed no statistically significant differences in suicidal risk (SABCS scores) between race groups (overall p = 0.51).
+Specifically, Asian participants (p = 0.45) and those in the “Other” race category (p = 0.32) did not differ significantly in suicidal risk compared with White/Caucasian participants, the reference group.
+
+# Compare and Contrast with ANOVA Results
+Both the ANOVA and regression examined differences in suicidal risk by race and reached the same conclusion: there were no significant differences in mean SABCS scores across racial groups.
+The regression quantified these differences relative to the White/Caucasian group, while the ANOVA tested for any overall group difference.
+Together, both analyses indicate that race was not a significant predictor of suicidal risk in this sample.
+
+
+## 3. This problem will focus on comparing suicidal risk (Suicidal Affect-Behavior-Cognition Scale [SABCS]) across the five income groups
+
+```{r}
+# A. Group comparison for INCOME
+
+library(dplyr)
+library(ggplot2)
+
+# 1. Summary stats by INCOME
+income_summary <- data %>%
+  group_by(INCOME) %>%
+  summarise(
+    n = n(),
+    mean_SABCS = mean(SABCS_TOTAL_SUM, na.rm = TRUE),
+    sd_SABCS = sd(SABCS_TOTAL_SUM, na.rm = TRUE),
+    median_SABCS = median(SABCS_TOTAL_SUM, na.rm = TRUE),
+    IQR_SABCS = IQR(SABCS_TOTAL_SUM, na.rm = TRUE)
+  )
+
+income_summary
+
+# 2. Visualization
+ggplot(data, aes(x = INCOME, y = SABCS_TOTAL_SUM, fill = INCOME)) +
+  geom_boxplot() +
+  geom_jitter(width = 0.15, alpha = 0.4) +
+  theme_minimal() +
+  labs(
+    title = "Distribution of Suicidal Risk (SABCS) Across Income Groups",
+    x = "Income Group",
+    y = "SABCS Total Score"
+  ) +
+  theme(legend.position = "none")
+
+# 3. One-way ANOVA
+anova_income <- aov(SABCS_TOTAL_SUM ~ INCOME, data = data)
+summary(anova_income)
+```
+# A. Group comparison
+
+Across the five income groups, suicidal-risk scores (SABCS) showed similarly right-skewed distributions, with most participants reporting low scores and a smaller subset showing higher levels of risk. Median scores and variability were generally comparable across income levels, although slightly greater spread was observed in the lower-income and middle-income groups. Overall, no clear visual differences in central tendency or distribution shape were evident among the five groups.
+
+#B. CHECKING ASSUMPTION 
+```{r}
+# Levene test
+library(car)
+leveneTest(SABCS_TOTAL_SUM ~ INCOME, data = data)
+
+# Shapiro–Wilk for residuals
+shapiro.test(residuals(anova_income))
+
+# Residual plots
+par(mfrow = c(1, 2))
+plot(anova_income, which = 1)  # Residuals vs Fitted
+plot(anova_income, which = 2)  # QQ plot
+par(mfrow = c(1, 1))
+```
+Levene’s test indicated that the assumption of homogeneity of variances across the five income groups was satisfied (F(3,434) = 0.67, p = 0.57). However, the Shapiro–Wilk test showed that the ANOVA residuals were strongly non-normal (W = 0.695, p < 0.001), reflecting substantial skewness in the suicidal-risk data. Although ANOVA is generally robust to non-normality with large samples, the severity of this violation suggests that a non-parametric alternative may be more appropriate as a confirmatory analysis. 
+
+# POST-HOC TESTTEST
+
+Because the one-way ANOVA did not find a statistically significant difference in suicidal-risk scores across the five income groups (p = 0.375), post-hoc pairwise comparisons were not conducted. Post-hoc tests are only meaningful when the overall ANOVA indicates that at least one group mean differs significantly from the others. Since this was not the case, additional comparisons would not provide useful or interpretable information.
+
+
+## 4. This problem will focus on comparing suicidal risk (Suicidal Affect-Behavior-Cognition Scale [SABCS]) across the two gender groups. 
+
+```{r}
+# Check group sizes and means
+table(data$GENDER)
+tapply(data$SABCS_TOTAL_SUM, data$GENDER, mean, na.rm = TRUE)
+tapply(data$SABCS_TOTAL_SUM, data$GENDER, sd, na.rm = TRUE)
+
+# Perform independent samples t-test
+t_test_gender <- t.test(SABCS_TOTAL_SUM ~ GENDER, data = data, var.equal = TRUE)
+t_test_gender
+```
+
+The two-sample t-test showed no significant difference in suicidal risk (SABCS scores) between female and male participants (t(544) = 0.45, p = 0.65).
+On average, women and men reported similar levels of suicidal thoughts, behaviors, and feelings in this sample.
+
+```{r}
+data$GENDER <- relevel(data$GENDER, ref = "Female")
+lm_gender <- lm(SABCS_TOTAL_SUM ~ GENDER, data = data)
+summary(lm_gender)
+```
+
+# Group comnparison 
+The regression analysis confirmed that gender was not a significant predictor of suicidal risk (p = 0.65).
+Male participants scored, on average, 0.33 points lower on the SABCS scale than female participants, but this small difference was not statistically meaningful.
+
+#Compare and contrast 
+Both the t-test and the regression model produced identical results—gender was not associated with differences in suicidal-risk scores.
+The t-test directly compared mean SABCS scores between females and males, while the regression estimated the mean difference using females as the reference category.
+Together, the findings indicate that gender did not play a significant role in suicidal risk within this sample.
+
+## 5. This problem will focus on quantifying the association between suicidal risk (Suicidal Affect-Behavior-Cognition Scale [SABCS]) and depression (CESD-R), including the form, direction, and strength of their relationship.
+
+```{r}
+library(ggplot2)
+
+ggplot(data, aes(x = CESDR_TOTAL_SUM, y = SABCS_TOTAL_SUM)) +
+  geom_point(alpha = 0.5, color = "#2E86AB") +
+  geom_smooth(method = "lm", se = TRUE, color = "#E74C3C") +
+  theme_minimal() +
+  labs(
+    title = "Relationship Between Depression (CESD-R) and Suicidal Risk (SABCS)",
+    x = "Depression (CESD-R Total Score)",
+    y = "Suicidal Risk (SABCS Total Score)"
+  )
+
+
+cor_test <- cor.test(data$SABCS_TOTAL_SUM, 
+                     data$CESDR_TOTAL_SUM, method = "pearson")
+cor_test
+
+
+# Check linearity visually
+plot(data$CESDR_TOTAL_SUM, data$SABCS_TOTAL_SUM,
+     main = "Scatterplot to Assess Linearity",
+     xlab = "Depression (CESD-R)", ylab = "Suicidal Risk (SABCS)")
+abline(lm(SABCS_TOTAL_SUM ~ CESDR_TOTAL_SUM, data = data), col = "red")
+
+# Check normality of both variables
+shapiro.test(data$CESDR_TOTAL_SUM)
+shapiro.test(data$SABCS_TOTAL_SUM)
+```
+
+# Visualization:
+The scatterplot demonstrates a clear positive linear relationship between depression (CESD-R) and suicidal risk (SABCS). As depression scores increase, suicidal risk scores also tend to rise. The regression line indicates that this relationship is approximately linear.
+
+# Estimation:
+The Pearson correlation coefficient between depression and suicidal risk was r = 0.589 (95% CI [0.53, 0.64]), indicating a moderate to strong positive association. This means that participants with higher depression levels generally reported higher suicidal risk.
+
+# Test of assumptions:
+Visual inspection of the scatterplot suggests that the relationship is linear. However, Shapiro–Wilk tests showed both variables deviate from normality (p < 0.001). Given the large sample size (n = 546), the Pearson correlation remains valid because the method is robust to mild non-normality when sample sizes are large.
+
+# Test of correlation (α = 0.05):
+The correlation was statistically significant (t(544) = 17.01, p < 0.001).
+In plain language:
+
+There is a significant positive relationship between depression and suicidal risk. Participants with higher depression scores also tend to experience greater suicidal thoughts, feelings, and behaviors. The strength of the association suggests that depression is an important factor closely linked to suicidal risk in this sample.
+
+# Visualization for linear regression 
+
+```{r}
+## ---- Linear Regression: Depression predicting Suicidal Risk ----
+
+# Fit simple linear regression model
+lm_line <- lm(SABCS_TOTAL_SUM ~ CESDR_TOTAL_SUM, data = data)
+
+# Display summary of regression results
+summary(lm_line)
+
+#  Visualization: scatterplot + regression line
+library(ggplot2)
+
+ggplot(data, aes(x = CESDR_TOTAL_SUM, y = SABCS_TOTAL_SUM)) +
+  geom_point(alpha = 0.5, color = "#2E86AB") +
+  geom_smooth(method = "lm", se = TRUE, color = "#E74C3C") +
+  theme_minimal() +
+  labs(
+    title = "Linear Relationship Between Depression (CESD-R) and Suicidal Risk (SABCS)",
+    x = "Depression (CESD-R Total Score)",
+    y = "Suicidal Risk (SABCS Total Score)"
+  )
+
+#  Extract regression coefficients for equation
+coef(lm_line)
+
+# (optional) store intercept and slope for display
+intercept <- coef(lm_line)[1]
+slope <- coef(lm_line)[2]
+cat("Estimated regression equation:\nSABCS =", round(intercept, 2),
+    "+", round(slope, 2), "× CESD-R\n")
+
+# Calculate R-squared manually (for reporting)
+r_squared <- summary(lm_line)$r.squared
+cat("R-squared:", round(r_squared, 3), "\n")
+```
+Because the scatterplot showed a clear positive linear trend between depression (CESD-R) and suicidal risk (SABCS), fitting a line of best fit was appropriate.
+The estimated regression equation was:
+
+SABCS=0.01+0.21×CESD-R
+
+This means that for every 1-point increase in the CESD-R depression score, the predicted suicidal risk score increases by about 0.21 points on average.
+The positive slope indicates that higher depression scores are associated with higher suicidal risk.
+
+# Linear Regression Analysis (α = 0.05)
+
+The regression model revealed a statistically significant positive relationship between depression and suicidal risk (F(1, 544) = 289.4, p < 0.001).
+The slope for depression (β = 0.21) was significant (p < 0.001), indicating that depression scores were a strong predictor of suicidal risk scores.
+The model explained approximately 34.7% of the variance in suicidal risk (R² = 0.35), suggesting a substantial association.
+
+Plain-language interpretation:
+The analysis shows that individuals with higher depression levels tend to report higher suicidal-risk scores.
+The relationship is statistically significant and moderately strong, meaning that depression accounts for a large portion of the differences in suicidal risk among participants.
+
+## 6. This problem will focus on quantifying the association between suicidal risk (Suicidal Affect-Behavior-Cognition Scale [SABCS]) and age, including the form, direction, and strength of their relationship
+
+```{r}
+# Scatterplot of Age vs. Suicidal Risk
+ggplot(data, aes(x = AGE, y = SABCS_TOTAL_SUM)) +
+  geom_point(alpha = 0.5, color = "#2E86AB") +
+  geom_smooth(method = "lm", se = TRUE, color = "#E74C3C") +
+  theme_minimal() +
+  labs(
+    title = "Relationship Between Age and Suicidal Risk (SABCS)",
+    x = "Age (years)",
+    y = "Suicidal Risk (SABCS Total Score)"
+  )
+```
+
+The scatterplot shows a generally flat pattern with no clear upward or downward trend.
+This suggests that suicidal risk scores do not change substantially with age in this sample.
+The fitted regression line indicates that the relationship between age and suicidal risk is weak.
+
+```{r}
+# Pearson correlation between suicidal risk and age
+cor_age <- cor.test(data$SABCS_TOTAL_SUM, data$AGE, method = "pearson")
+cor_age
+
+# Check linearity visually (scatterplot above)
+# Check normality of both variables
+shapiro.test(data$AGE)
+shapiro.test(data$SABCS_TOTAL_SUM)
+
+lm_age <- lm(SABCS_TOTAL_SUM ~ AGE, data = data)
+summary(lm_age)
+
+
+```
+
+# Visualization
+
+The scatterplot of age and suicidal risk shows a flat distribution, indicating that suicidal risk scores remain relatively constant across ages.
+The fitted regression line is almost horizontal, suggesting that age has little or no relationship with suicidal risk.
+
+# Estimation
+
+The Pearson correlation between age and suicidal risk was
+r = –0.075, 95% CI [–0.158, 0.009], p = 0.080.
+This indicates a very weak, negative association—older participants tended to report slightly lower suicidal risk scores, but the difference is extremely small.
+
+# Test of Assumptions
+
+The scatterplot indicates no major outliers and an approximately linear pattern, meeting the linearity assumption.
+However, the Shapiro–Wilk tests for both variables were significant (W = 0.74 for age and W = 0.71 for suicidal risk, both p < 0.001), meaning both distributions deviate from normality.
+Because the sample size is large (n = 546), Pearson’s correlation remains robust to non-normality, so the analysis is still valid.
+
+# Test of Correlation (alpha = 0.05)
+
+The correlation between age and suicidal risk was not statistically significant (r = –0.075, p = 0.08).
+This means there is no reliable evidence of an association between age and suicidal risk in this sample.
+In plain language, participants’ suicidal thoughts, feelings, and behaviors were similar across all age groups, with no clear trend as age increased.
+
+# Linear Regression and Fitted Line
+
+Because the scatterplot showed an approximately linear (though weak) pattern, fitting a line of best fit was appropriate.
+The regression equation was: SABCS=4.87−0.03×Age
+
+The slope was not statistically significant (p = 0.08), and the model explained less than 1% of the variance in suicidal risk (R² < 0.01). This confirms that age does not meaningfully predict suicidal risk.
+
+# Plain-Language Summary
+
+Both the correlation and regression analyses showed that age was not significantly related to suicidal risk.
+Although the relationship was slightly negative, the effect was very small and not statistically meaningful.
+Overall, suicidal risk remains relatively constant across age, suggesting that age alone is not a strong factor influencing suicidal thoughts or behaviors.
+
+
+```{r}
+
+```
+
