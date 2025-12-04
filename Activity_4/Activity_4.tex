@@ -1,0 +1,1330 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\documentclass[
+]{article}
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx}
+\makeatletter
+\newsavebox\pandoc@box
+\newcommand*\pandocbounded[1]{% scales image to fit in text height/width
+  \sbox\pandoc@box{#1}%
+  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
+  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
+  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi% select the smaller of both
+  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
+  \else\usebox{\pandoc@box}%
+  \fi%
+}
+% Set default figure placement to htbp
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\usepackage{caption}
+\captionsetup[table]{justification=centering}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
+\usepackage{fontspec}
+\usepackage{multicol}
+\usepackage{hhline}
+\newlength\Oldarrayrulewidth
+\newlength\Oldtabcolsep
+\usepackage{hyperref}
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  pdftitle={Thang\_Activity 4},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\title{Thang\_Activity 4}
+\author{}
+\date{\vspace{-2.5em}2025-11-09}
+
+\begin{document}
+\maketitle
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DocumentationTok{\#\# Set global CRAN mirror}
+\FunctionTok{options}\NormalTok{(}\AttributeTok{repos =} \FunctionTok{c}\NormalTok{(}\AttributeTok{CRAN =} \StringTok{"https://cran.rstudio.com/"}\NormalTok{))}
+
+\DocumentationTok{\#\# Install the tableone package}
+\FunctionTok{install.packages}\NormalTok{(}\StringTok{"tableone"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Installing package into 'C:/Users/Thang/AppData/Local/R/win-library/4.3'
+## (as 'lib' is unspecified)
+\end{verbatim}
+
+\begin{verbatim}
+## package 'tableone' successfully unpacked and MD5 sums checked
+## 
+## The downloaded binary packages are in
+##  C:\Users\Thang\AppData\Local\Temp\RtmpATs4He\downloaded_packages
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DocumentationTok{\#\# Load the required packages}
+
+\FunctionTok{library}\NormalTok{(tableone)}
+\FunctionTok{library}\NormalTok{(readxl)}
+\FunctionTok{library}\NormalTok{(dplyr)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Attaching package: 'dplyr'
+\end{verbatim}
+
+\begin{verbatim}
+## The following objects are masked from 'package:stats':
+## 
+##     filter, lag
+\end{verbatim}
+
+\begin{verbatim}
+## The following objects are masked from 'package:base':
+## 
+##     intersect, setdiff, setequal, union
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(janitor)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Attaching package: 'janitor'
+\end{verbatim}
+
+\begin{verbatim}
+## The following objects are masked from 'package:stats':
+## 
+##     chisq.test, fisher.test
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(knitr)}
+
+\FunctionTok{setwd}\NormalTok{(}\StringTok{"C:/Users/Thang/OneDrive/Documents/ActivityData\_Assignment/Activity\_4"}\NormalTok{)}
+\NormalTok{data }\OtherTok{\textless{}{-}} \FunctionTok{read\_excel}\NormalTok{(}\StringTok{"SuicideRisk\_Data.xlsx"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\section{QUESTION 1.}\label{question-1.}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# ============================}
+\CommentTok{\# PART A: SABCS \textasciitilde{} Demographics}
+\CommentTok{\# ============================}
+
+\CommentTok{\# Convert categorical variables to factors}
+\NormalTok{data}\SpecialCharTok{$}\NormalTok{GENDER    }\OtherTok{\textless{}{-}} \FunctionTok{factor}\NormalTok{(data}\SpecialCharTok{$}\NormalTok{GENDER)}
+\NormalTok{data}\SpecialCharTok{$}\NormalTok{RACE      }\OtherTok{\textless{}{-}} \FunctionTok{factor}\NormalTok{(data}\SpecialCharTok{$}\NormalTok{RACE)}
+\NormalTok{data}\SpecialCharTok{$}\NormalTok{ETHNICITY }\OtherTok{\textless{}{-}} \FunctionTok{factor}\NormalTok{(data}\SpecialCharTok{$}\NormalTok{ETHNICITY)}
+\NormalTok{data}\SpecialCharTok{$}\NormalTok{INCOME    }\OtherTok{\textless{}{-}} \FunctionTok{factor}\NormalTok{(data}\SpecialCharTok{$}\NormalTok{INCOME)}
+
+\NormalTok{model\_a }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(SABCS\_TOTAL\_SUM }\SpecialCharTok{\textasciitilde{}}\NormalTok{ AGE }\SpecialCharTok{+}\NormalTok{ GENDER }\SpecialCharTok{+}\NormalTok{ RACE }\SpecialCharTok{+}\NormalTok{ ETHNICITY }\SpecialCharTok{+}\NormalTok{ INCOME, }\AttributeTok{data =}\NormalTok{ data)}
+
+\FunctionTok{summary}\NormalTok{(model\_a)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = SABCS_TOTAL_SUM ~ AGE + GENDER + RACE + ETHNICITY + 
+##     INCOME, data = data)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -6.1136 -2.9988 -1.5688  0.7734 28.8824 
+## 
+## Coefficients:
+##                              Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)                   6.26744    1.20338   5.208 2.72e-07 ***
+## AGE                          -0.06428    0.03280  -1.960   0.0505 .  
+## GENDERMale                   -0.28798    0.74409  -0.387   0.6989    
+## RACEOther                    -0.10208    0.81829  -0.125   0.9008    
+## RACEWhite/Caucasian          -0.35525    0.67499  -0.526   0.5989    
+## ETHNICITYNot Hispanic/Latino -1.18615    0.65198  -1.819   0.0694 .  
+## INCOME$51,000 - $75,000      -1.04222    0.67541  -1.543   0.1234    
+## INCOME$76,000 - $100,000     -0.31306    0.69360  -0.451   0.6519    
+## INCOME< $30,000               1.16960    0.66952   1.747   0.0812 .  
+## INCOME>$100,000               0.02945    0.67065   0.044   0.9650    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 4.808 on 536 degrees of freedom
+## Multiple R-squared:  0.03723,    Adjusted R-squared:  0.02107 
+## F-statistic: 2.303 on 9 and 536 DF,  p-value: 0.01522
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Diagnostics}
+\FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow=}\FunctionTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{,}\DecValTok{2}\NormalTok{))}
+\FunctionTok{plot}\NormalTok{(model\_a)}
+\end{Highlighting}
+\end{Shaded}
+
+\pandocbounded{\includegraphics[keepaspectratio]{Activity_4_files/figure-latex/unnamed-chunk-2-1.pdf}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Reset plotting}
+\FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow=}\FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{1}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+The demographic model accounts for a mere 3.7\% of the variation in
+suicidal risk, indicating that demographics alone do not serve as robust
+predictors of SABCS scores. Age has a small negative correlation,
+indicating a somewhat diminished suicide risk among older participants;
+nevertheless, the effect is minor. Ethnicity (Not Hispanic/Latino) and
+low income (\textless\$30,000) exhibit marginal correlations with SABCS
+results, however none serve as robust predictors. The majority of
+demographic factors, such as gender and ethnicity, lack statistical
+significance. In general, demographic traits don't give us much
+information on how likely someone in this group is to commit suicide.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# ============================}
+\CommentTok{\# PART B: SABCS \textasciitilde{} Depression}
+\CommentTok{\# ============================}
+
+\NormalTok{model\_b }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(SABCS\_TOTAL\_SUM }\SpecialCharTok{\textasciitilde{}}\NormalTok{ CESDR\_TOTAL\_SUM, }\AttributeTok{data =}\NormalTok{ data)}
+
+\FunctionTok{summary}\NormalTok{(model\_b)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = SABCS_TOTAL_SUM ~ CESDR_TOTAL_SUM, data = data)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -11.2968  -2.1009  -0.4739   0.9891  21.3302 
+## 
+## Coefficients:
+##                 Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)      0.01088    0.25650   0.042    0.966    
+## CESDR_TOTAL_SUM  0.20900    0.01228  17.013   <2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 3.93 on 544 degrees of freedom
+## Multiple R-squared:  0.3473, Adjusted R-squared:  0.3461 
+## F-statistic: 289.4 on 1 and 544 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Diagnostics}
+\FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow=}\FunctionTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{,}\DecValTok{2}\NormalTok{))}
+\FunctionTok{plot}\NormalTok{(model\_b)}
+\end{Highlighting}
+\end{Shaded}
+
+\pandocbounded{\includegraphics[keepaspectratio]{Activity_4_files/figure-latex/unnamed-chunk-3-1.pdf}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow=}\FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{1}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+There is a substantial and significant positive relationship between
+depressive symptoms (CESD-R scores) and suicide risk, which means that
+higher depression levels are linked to higher SABCS scores. The model
+elucidates around 35\% of the variance in suicide risk, far surpassing
+the demographic model. In this sample, depression is a strong indicator
+of the probability of suicide.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# ============================}
+\CommentTok{\# PART C: SABCS \textasciitilde{} ACES 1–10}
+\CommentTok{\# ============================}
+
+\NormalTok{aces\_vars }\OtherTok{\textless{}{-}} \FunctionTok{paste0}\NormalTok{(}\StringTok{"ACES\_\_\_"}\NormalTok{, }\DecValTok{1}\SpecialCharTok{:}\DecValTok{10}\NormalTok{)}
+
+\NormalTok{model\_c }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(}\FunctionTok{as.formula}\NormalTok{(}
+  \FunctionTok{paste}\NormalTok{(}\StringTok{"SABCS\_TOTAL\_SUM \textasciitilde{}"}\NormalTok{, }\FunctionTok{paste}\NormalTok{(aces\_vars, }\AttributeTok{collapse =} \StringTok{" + "}\NormalTok{))}
+\NormalTok{), }\AttributeTok{data =}\NormalTok{ data)}
+
+\FunctionTok{summary}\NormalTok{(model\_c)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = as.formula(paste("SABCS_TOTAL_SUM ~", paste(aces_vars, 
+##     collapse = " + "))), data = data)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -7.9486 -2.2530 -1.2530  0.9881 24.3547 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)  2.25301    0.25704   8.765  < 2e-16 ***
+## ACES___1     0.19534    0.72244   0.270 0.786969    
+## ACES___2     2.06336    0.56740   3.637 0.000303 ***
+## ACES___3     2.23049    0.56574   3.943 9.13e-05 ***
+## ACES___4     0.09203    1.26894   0.073 0.942208    
+## ACES___5     0.81234    0.70763   1.148 0.251491    
+## ACES___6    -0.53680    0.65125  -0.824 0.410164    
+## ACES___7     0.57879    0.66378   0.872 0.383619    
+## ACES___8     1.63521    0.53899   3.034 0.002532 ** 
+## ACES___9    -1.24110    0.47201  -2.629 0.008799 ** 
+## ACES___10   -1.44145    0.99893  -1.443 0.149608    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 4.533 on 535 degrees of freedom
+## Multiple R-squared:  0.146,  Adjusted R-squared:   0.13 
+## F-statistic: 9.147 on 10 and 535 DF,  p-value: 5.074e-14
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Diagnostics}
+\FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow=}\FunctionTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{,}\DecValTok{2}\NormalTok{))}
+\FunctionTok{plot}\NormalTok{(model\_c)}
+\end{Highlighting}
+\end{Shaded}
+
+\pandocbounded{\includegraphics[keepaspectratio]{Activity_4_files/figure-latex/unnamed-chunk-4-1.pdf}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow=}\FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{1}\NormalTok{))}
+
+\CommentTok{\# Extract coefficients with p \textless{} 0.20}
+\NormalTok{get\_sig }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(model, original\_vars) \{}
+\NormalTok{  tbl }\OtherTok{\textless{}{-}} \FunctionTok{summary}\NormalTok{(model)}\SpecialCharTok{$}\NormalTok{coefficients}
+\NormalTok{  sig\_terms }\OtherTok{\textless{}{-}} \FunctionTok{rownames}\NormalTok{(tbl)[tbl[,}\DecValTok{4}\NormalTok{] }\SpecialCharTok{\textless{}} \FloatTok{0.20}\NormalTok{]   }\CommentTok{\# significant rows (dummy names)}
+\NormalTok{  sig\_terms }\OtherTok{\textless{}{-}}\NormalTok{ sig\_terms[sig\_terms }\SpecialCharTok{!=} \StringTok{"(Intercept)"}\NormalTok{]}
+
+\NormalTok{  matched }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{()}
+  \ControlFlowTok{for}\NormalTok{ (term }\ControlFlowTok{in}\NormalTok{ sig\_terms) \{}
+\NormalTok{    base }\OtherTok{\textless{}{-}}\NormalTok{ original\_vars[}\FunctionTok{sapply}\NormalTok{(original\_vars, }\ControlFlowTok{function}\NormalTok{(v) }\FunctionTok{startsWith}\NormalTok{(term, v))]}
+\NormalTok{    matched }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(matched, base)}
+\NormalTok{  \}}
+
+  \FunctionTok{unique}\NormalTok{(matched)}
+\NormalTok{\}}
+\NormalTok{orig\_a }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"AGE"}\NormalTok{, }\StringTok{"GENDER"}\NormalTok{, }\StringTok{"RACE"}\NormalTok{, }\StringTok{"ETHNICITY"}\NormalTok{, }\StringTok{"INCOME"}\NormalTok{)}
+\NormalTok{orig\_b }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"CESDR\_TOTAL\_SUM"}\NormalTok{)}
+\NormalTok{orig\_c }\OtherTok{\textless{}{-}} \FunctionTok{paste0}\NormalTok{(}\StringTok{"ACES\_\_\_"}\NormalTok{, }\DecValTok{1}\SpecialCharTok{:}\DecValTok{10}\NormalTok{)}
+
+\NormalTok{sig\_a }\OtherTok{\textless{}{-}} \FunctionTok{get\_sig}\NormalTok{(model\_a, orig\_a)}
+\NormalTok{sig\_b }\OtherTok{\textless{}{-}} \FunctionTok{get\_sig}\NormalTok{(model\_b, orig\_b)}
+\NormalTok{sig\_c }\OtherTok{\textless{}{-}} \FunctionTok{get\_sig}\NormalTok{(model\_c, orig\_c)}
+
+\NormalTok{sig\_a; sig\_b; sig\_c}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "AGE"       "ETHNICITY" "INCOME"
+\end{verbatim}
+
+\begin{verbatim}
+## [1] "CESDR_TOTAL_SUM"
+\end{verbatim}
+
+\begin{verbatim}
+## [1] "ACES___2"  "ACES___3"  "ACES___8"  "ACES___9"  "ACES___1"  "ACES___10"
+\end{verbatim}
+
+Several ACE categories exhibit significant correlations with suicide
+risk, indicating that specific forms of childhood adversity are closely
+linked to elevated SABCS scores. In particular, ACEs 2, 3, and 8 are
+connected to a much increased risk of suicide, while ACE 9 shows a
+negative link. Most other ACE items do not have significant impacts,
+indicating that not all forms of childhood adversity equally influence
+suicidal thoughts or behaviors. The model accounts for around 14--15\%
+of the variation in suicide risk, suggesting that childhood events are
+significant, though not the sole factor. Overall, ACEs help predict the
+risk of suicide, although the effects depend on the sort of adversity.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# ============================}
+\CommentTok{\# PART D}
+\CommentTok{\# ============================}
+\NormalTok{all\_sig }\OtherTok{\textless{}{-}} \FunctionTok{unique}\NormalTok{(}\FunctionTok{c}\NormalTok{(sig\_a, sig\_b, sig\_c))}
+
+\NormalTok{formula\_d }\OtherTok{\textless{}{-}} \FunctionTok{as.formula}\NormalTok{(}
+  \FunctionTok{paste}\NormalTok{(}\StringTok{"SABCS\_TOTAL\_SUM \textasciitilde{}"}\NormalTok{, }\FunctionTok{paste}\NormalTok{(all\_sig, }\AttributeTok{collapse =} \StringTok{" + "}\NormalTok{))}
+\NormalTok{)}
+
+\NormalTok{model\_d }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(formula\_d, }\AttributeTok{data =}\NormalTok{ data)}
+\FunctionTok{summary}\NormalTok{(model\_d)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = formula_d, data = data)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -11.6914  -1.9593  -0.4288   1.2998  18.4356 
+## 
+## Coefficients:
+##                              Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)                   1.89044    0.90389   2.091  0.03696 *  
+## AGE                          -0.05315    0.02637  -2.016  0.04432 *  
+## ETHNICITYNot Hispanic/Latino -1.00572    0.50380  -1.996  0.04641 *  
+## INCOME$51,000 - $75,000      -0.44277    0.52894  -0.837  0.40292    
+## INCOME$76,000 - $100,000      0.20055    0.53890   0.372  0.70993    
+## INCOME< $30,000               0.57864    0.52733   1.097  0.27301    
+## INCOME>$100,000               0.78980    0.51999   1.519  0.12939    
+## CESDR_TOTAL_SUM               0.18484    0.01269  14.560  < 2e-16 ***
+## ACES___2                      1.36291    0.47280   2.883  0.00410 ** 
+## ACES___3                      1.38402    0.45800   3.022  0.00263 ** 
+## ACES___8                      0.83230    0.44182   1.884  0.06014 .  
+## ACES___9                     -1.27265    0.39121  -3.253  0.00121 ** 
+## ACES___1                      0.11834    0.59304   0.200  0.84191    
+## ACES___10                    -0.21860    0.80080  -0.273  0.78498    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 3.772 on 532 degrees of freedom
+## Multiple R-squared:  0.4117, Adjusted R-squared:  0.3973 
+## F-statistic: 28.64 on 13 and 532 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow=}\FunctionTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{,}\DecValTok{2}\NormalTok{)); }\FunctionTok{plot}\NormalTok{(model\_d)}
+\end{Highlighting}
+\end{Shaded}
+
+\pandocbounded{\includegraphics[keepaspectratio]{Activity_4_files/figure-latex/unnamed-chunk-5-1.pdf}}
+The combined model elucidates approximately 41\% of the heterogeneity in
+suicide risk, representing a significant enhancement over the separate
+demographic and ACE models. Depression (CESDR scores) continues to be
+the most significant predictor, even after controlling for demographics
+and childhood adversity, demonstrating its critical role in suicidal
+risk. A number of ACE categories (ACES 2, 3, and 9) continue to exhibit
+substantial correlations, indicating that particular childhood events
+still have major implications beyond depression. Age and ethnicity
+exhibit minor yet statistically significant effects, whereas wealth
+demonstrates less influence. In general, integrating demographics,
+depression, and ACEs gives a better picture of the risk of suicide.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# ============================}
+\CommentTok{\# PART E: sqrt(SABCS) model}
+\CommentTok{\# ============================}
+
+\CommentTok{\# Create transformed variable}
+\NormalTok{data}\SpecialCharTok{$}\NormalTok{SABCS\_sqrt }\OtherTok{\textless{}{-}} \FunctionTok{sqrt}\NormalTok{(data}\SpecialCharTok{$}\NormalTok{SABCS\_TOTAL\_SUM)}
+
+\CommentTok{\# Build formula using same predictors as Part D}
+\NormalTok{formula\_e }\OtherTok{\textless{}{-}} \FunctionTok{as.formula}\NormalTok{(}
+  \FunctionTok{paste}\NormalTok{(}\StringTok{"SABCS\_sqrt \textasciitilde{}"}\NormalTok{, }\FunctionTok{paste}\NormalTok{(all\_sig, }\AttributeTok{collapse =} \StringTok{" + "}\NormalTok{))}
+\NormalTok{)}
+
+\CommentTok{\# Fit model}
+\NormalTok{model\_e }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(formula\_e, }\AttributeTok{data =}\NormalTok{ data)}
+
+\CommentTok{\# Show results}
+\FunctionTok{summary}\NormalTok{(model\_e)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = formula_e, data = data)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -3.4442 -0.6833 -0.0962  0.6821  2.8227 
+## 
+## Coefficients:
+##                               Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)                   0.908047   0.240276   3.779 0.000175 ***
+## AGE                          -0.012019   0.007010  -1.715 0.086982 .  
+## ETHNICITYNot Hispanic/Latino -0.263033   0.133921  -1.964 0.050040 .  
+## INCOME$51,000 - $75,000      -0.218214   0.140606  -1.552 0.121268    
+## INCOME$76,000 - $100,000      0.041328   0.143254   0.288 0.773081    
+## INCOME< $30,000               0.131719   0.140176   0.940 0.347813    
+## INCOME>$100,000               0.147564   0.138227   1.068 0.286208    
+## CESDR_TOTAL_SUM               0.047502   0.003375  14.076  < 2e-16 ***
+## ACES___2                      0.354801   0.125681   2.823 0.004935 ** 
+## ACES___3                      0.331545   0.121747   2.723 0.006677 ** 
+## ACES___8                      0.231329   0.117447   1.970 0.049397 *  
+## ACES___9                     -0.280136   0.103993  -2.694 0.007287 ** 
+## ACES___1                      0.059622   0.157644   0.378 0.705425    
+## ACES___10                     0.120804   0.212873   0.567 0.570617    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 1.003 on 532 degrees of freedom
+## Multiple R-squared:    0.4,  Adjusted R-squared:  0.3853 
+## F-statistic: 27.28 on 13 and 532 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Diagnostics}
+\FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow=}\FunctionTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{,}\DecValTok{2}\NormalTok{))}
+\FunctionTok{plot}\NormalTok{(model\_e)}
+\end{Highlighting}
+\end{Shaded}
+
+\pandocbounded{\includegraphics[keepaspectratio]{Activity_4_files/figure-latex/unnamed-chunk-6-1.pdf}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow=}\FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{1}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+Following the square-root transformation, the model exhibits analogous
+patterns of important predictors as shown in Part D, with depression
+persisting as the most substantial factor linked to suicide risk. ACE
+items 2, 3, 8, and 9 still have significant effects, but the sizes of
+the effects are reduced because the transformation has made the outcome
+smaller. The residuals are more evenly distributed and have a smaller
+range, which means that the transformation makes the data more normal
+and stabilizes the variance. The converted model fits the data better
+overall, while still keeping the primary associations that were shown in
+the untransformed model.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# ============================}
+\CommentTok{\# PART F: Compare Model D vs E}
+\CommentTok{\# ============================}
+
+\CommentTok{\# Compare AIC \& BIC}
+\FunctionTok{AIC}\NormalTok{(model\_d, model\_e)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##         df      AIC
+## model_d 15 3015.188
+## model_e 15 1568.376
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{BIC}\NormalTok{(model\_d, model\_e)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##         df      BIC
+## model_d 15 3079.727
+## model_e 15 1632.915
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Residual histograms}
+\FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow=}\FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{))}
+\FunctionTok{hist}\NormalTok{(}\FunctionTok{resid}\NormalTok{(model\_d), }\AttributeTok{main=}\StringTok{"Residuals: Model D"}\NormalTok{, }\AttributeTok{xlab=}\StringTok{""}\NormalTok{, }\AttributeTok{col=}\StringTok{"lightblue"}\NormalTok{)}
+\FunctionTok{hist}\NormalTok{(}\FunctionTok{resid}\NormalTok{(model\_e), }\AttributeTok{main=}\StringTok{"Residuals: Model E (sqrt)"}\NormalTok{, }\AttributeTok{xlab=}\StringTok{""}\NormalTok{, }\AttributeTok{col=}\StringTok{"lightgreen"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\pandocbounded{\includegraphics[keepaspectratio]{Activity_4_files/figure-latex/unnamed-chunk-7-1.pdf}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow=}\FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{1}\NormalTok{))}
+
+\CommentTok{\# Shapiro{-}Wilk normality test}
+\FunctionTok{shapiro.test}\NormalTok{(}\FunctionTok{resid}\NormalTok{(model\_d))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Shapiro-Wilk normality test
+## 
+## data:  resid(model_d)
+## W = 0.93427, p-value = 9.056e-15
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{shapiro.test}\NormalTok{(}\FunctionTok{resid}\NormalTok{(model\_e))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Shapiro-Wilk normality test
+## 
+## data:  resid(model_e)
+## W = 0.99344, p-value = 0.01771
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Residual vs Fitted comparison}
+\FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow=}\FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{))}
+\FunctionTok{plot}\NormalTok{(model\_d}\SpecialCharTok{$}\NormalTok{fitted.values, }\FunctionTok{resid}\NormalTok{(model\_d),}
+     \AttributeTok{main=}\StringTok{"Model D Residual vs Fitted"}\NormalTok{,}
+     \AttributeTok{xlab=}\StringTok{"Fitted"}\NormalTok{, }\AttributeTok{ylab=}\StringTok{"Residuals"}\NormalTok{)}
+
+\FunctionTok{plot}\NormalTok{(model\_e}\SpecialCharTok{$}\NormalTok{fitted.values, }\FunctionTok{resid}\NormalTok{(model\_e),}
+     \AttributeTok{main=}\StringTok{"Model E Residual vs Fitted"}\NormalTok{,}
+     \AttributeTok{xlab=}\StringTok{"Fitted"}\NormalTok{, }\AttributeTok{ylab=}\StringTok{"Residuals"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\pandocbounded{\includegraphics[keepaspectratio]{Activity_4_files/figure-latex/unnamed-chunk-7-2.pdf}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow=}\FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{1}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+The square-root-transformed model (Model E) has much lower AIC and BIC
+values than the untransformed model (Model D). This means that it fits
+the data better. The Shapiro--Wilk test also shows that the residuals
+from Model E are substantially closer to a normal distribution (p ≈
+0.018) than those from Model D (p \textless{} 0.00000000000001). This
+means that Model E is more normal. Even though the transformed model is
+harder to understand because the coefficients are based on the square
+root of suicide risk instead of the raw score, it fits the statistical
+assumptions better. Taking into account the trade-off between
+interpretability and statistical validity, Model E is a stronger choice
+because it fits better and is more trustworthy.
+
+\section{QUESTION 2.}\label{question-2.}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# ============================}
+\CommentTok{\# PART A: HX\_SUICIDE \textasciitilde{} Demographics}
+\CommentTok{\# ============================}
+
+\NormalTok{model\_a\_hx }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(HX\_SUICIDE }\SpecialCharTok{\textasciitilde{}}\NormalTok{ AGE }\SpecialCharTok{+}\NormalTok{ GENDER }\SpecialCharTok{+}\NormalTok{ RACE }\SpecialCharTok{+}\NormalTok{ ETHNICITY }\SpecialCharTok{+}\NormalTok{ INCOME, }\AttributeTok{data =}\NormalTok{ data)}
+
+\FunctionTok{summary}\NormalTok{(model\_a\_hx)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = HX_SUICIDE ~ AGE + GENDER + RACE + ETHNICITY + INCOME, 
+##     data = data)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -0.21551 -0.10245 -0.07885 -0.05568  0.95821 
+## 
+## Coefficients:
+##                               Estimate Std. Error t value Pr(>|t|)  
+## (Intercept)                   0.138268   0.071498   1.934   0.0537 .
+## AGE                           0.001672   0.001949   0.858   0.3912  
+## GENDERMale                    0.012110   0.044210   0.274   0.7843  
+## RACEOther                    -0.038807   0.048618  -0.798   0.4251  
+## RACEWhite/Caucasian           0.017234   0.040104   0.430   0.6676  
+## ETHNICITYNot Hispanic/Latino -0.089846   0.038737  -2.319   0.0207 *
+## INCOME$51,000 - $75,000      -0.045096   0.040129  -1.124   0.2616  
+## INCOME$76,000 - $100,000     -0.029880   0.041210  -0.725   0.4687  
+## INCOME< $30,000               0.006487   0.039779   0.163   0.8705  
+## INCOME>$100,000              -0.021926   0.039846  -0.550   0.5824  
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.2857 on 536 degrees of freedom
+## Multiple R-squared:  0.01933,    Adjusted R-squared:  0.002864 
+## F-statistic: 1.174 on 9 and 536 DF,  p-value: 0.3092
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Diagnostics}
+\FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow=}\FunctionTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{,}\DecValTok{2}\NormalTok{))}
+\FunctionTok{plot}\NormalTok{(model\_a\_hx)}
+\end{Highlighting}
+\end{Shaded}
+
+\pandocbounded{\includegraphics[keepaspectratio]{Activity_4_files/figure-latex/unnamed-chunk-8-1.pdf}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow=}\FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{1}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+The demographic model elucidates a mere 2\% of the diversity in the
+history of suicide, as indicated by a R² value of approximately 2\%. Of
+all the demographic characteristics, only ethnicity (Not
+Hispanic/Latino) had a statistically significant link. People in this
+category had slightly lower suicide history scores. Other demographic
+factors, such as age, gender, ethnicity, and wealth, did not
+significantly forecast suicide history. In general, demographic traits
+by themselves are not good indicators of whether someone has ever
+thought about or attempted suicide.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# ============================}
+\CommentTok{\# PART B: HX\_SUICIDE \textasciitilde{} Depression}
+\CommentTok{\# ============================}
+
+\NormalTok{model\_b\_hx }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(HX\_SUICIDE }\SpecialCharTok{\textasciitilde{}}\NormalTok{ CESDR\_TOTAL\_SUM, }\AttributeTok{data =}\NormalTok{ data)}
+
+\FunctionTok{summary}\NormalTok{(model\_b\_hx)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = HX_SUICIDE ~ CESDR_TOTAL_SUM, data = data)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -0.34112 -0.10812 -0.05698 -0.01720  0.98848 
+## 
+## Coefficients:
+##                  Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)     0.0001492  0.0179847   0.008    0.993    
+## CESDR_TOTAL_SUM 0.0056829  0.0008614   6.598 9.92e-11 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.2755 on 544 degrees of freedom
+## Multiple R-squared:  0.07409,    Adjusted R-squared:  0.07239 
+## F-statistic: 43.53 on 1 and 544 DF,  p-value: 9.92e-11
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Diagnostics}
+\FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow=}\FunctionTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{,}\DecValTok{2}\NormalTok{))}
+\FunctionTok{plot}\NormalTok{(model\_b\_hx)}
+\end{Highlighting}
+\end{Shaded}
+
+\pandocbounded{\includegraphics[keepaspectratio]{Activity_4_files/figure-latex/unnamed-chunk-9-1.pdf}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow=}\FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{1}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+Depression exhibits a substantial positive correlation with suicide
+history, suggesting that persons with elevated depressive symptoms are
+more inclined to disclose a previous suicide attempt or intention. The
+overall R² is only about 7\%, but this is still a big step up from the
+demographic-only model. These results indicate that depression is a
+significant psychological factor associated with suicide history, even
+when analyzed in isolation. The diagnostic plots show that the residual
+patterns are rather consistent, but the outcome distribution is still
+not quite normal because it is a binary-like variable.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# ============================}
+\CommentTok{\# PART C: HX\_SUICIDE \textasciitilde{} ACES 1–10}
+\CommentTok{\# ============================}
+
+\NormalTok{aces\_vars }\OtherTok{\textless{}{-}} \FunctionTok{paste0}\NormalTok{(}\StringTok{"ACES\_\_\_"}\NormalTok{, }\DecValTok{1}\SpecialCharTok{:}\DecValTok{10}\NormalTok{)}
+
+\NormalTok{model\_c\_hx }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(}\FunctionTok{as.formula}\NormalTok{(}
+  \FunctionTok{paste}\NormalTok{(}\StringTok{"HX\_SUICIDE \textasciitilde{}"}\NormalTok{, }\FunctionTok{paste}\NormalTok{(aces\_vars, }\AttributeTok{collapse =} \StringTok{" + "}\NormalTok{))}
+\NormalTok{), }\AttributeTok{data =}\NormalTok{ data)}
+
+\FunctionTok{summary}\NormalTok{(model\_c\_hx)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = as.formula(paste("HX_SUICIDE ~", paste(aces_vars, 
+##     collapse = " + "))), data = data)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -0.41211 -0.10457 -0.01968 -0.01968  0.98032 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)  0.019678   0.015225   1.293 0.196738    
+## ACES___1    -0.019562   0.042791  -0.457 0.647742    
+## ACES___2     0.184569   0.033608   5.492 6.16e-08 ***
+## ACES___3     0.083640   0.033510   2.496 0.012860 *  
+## ACES___4     0.006125   0.075162   0.081 0.935081    
+## ACES___5    -0.017496   0.041914  -0.417 0.676541    
+## ACES___6    -0.045473   0.038575  -1.179 0.238993    
+## ACES___7    -0.057519   0.039317  -1.463 0.144066    
+## ACES___8     0.107913   0.031925   3.380 0.000777 ***
+## ACES___9     0.016308   0.027958   0.583 0.559940    
+## ACES___10    0.100126   0.059169   1.692 0.091189 .  
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.2685 on 535 degrees of freedom
+## Multiple R-squared:  0.1355, Adjusted R-squared:  0.1193 
+## F-statistic: 8.383 on 10 and 535 DF,  p-value: 1.011e-12
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Diagnostics}
+\FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow=}\FunctionTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{,}\DecValTok{2}\NormalTok{))}
+\FunctionTok{plot}\NormalTok{(model\_c\_hx)}
+\end{Highlighting}
+\end{Shaded}
+
+\pandocbounded{\includegraphics[keepaspectratio]{Activity_4_files/figure-latex/unnamed-chunk-10-1.pdf}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow=}\FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{1}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+Multiple ACE items were significantly associated with suicide history,
+including ACEs 2, 3, and 8. This indicates that certain types of
+childhood adversity---particularly emotional, physical, or
+household-related trauma---are linked to a higher likelihood of past
+suicidal behaviors. The model explained about 13\% of the variation,
+suggesting that ACEs play a meaningful but not exclusive role in
+predicting suicide history. Several ACE items such as ACE 1, 4, and 5
+were not significant, showing that not all childhood experiences
+contribute equally.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# ============================}
+\CommentTok{\# PART D}
+\CommentTok{\# ============================}
+\NormalTok{orig\_dem }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"AGE"}\NormalTok{, }\StringTok{"GENDER"}\NormalTok{, }\StringTok{"RACE"}\NormalTok{, }\StringTok{"ETHNICITY"}\NormalTok{, }\StringTok{"INCOME"}\NormalTok{)}
+\NormalTok{orig\_dep }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"CESDR\_TOTAL\_SUM"}\NormalTok{)}
+\NormalTok{orig\_aces }\OtherTok{\textless{}{-}} \FunctionTok{paste0}\NormalTok{(}\StringTok{"ACES\_\_\_"}\NormalTok{, }\DecValTok{1}\SpecialCharTok{:}\DecValTok{10}\NormalTok{)}
+\NormalTok{get\_sig }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(model, original\_vars) \{}
+\NormalTok{  tbl }\OtherTok{\textless{}{-}} \FunctionTok{summary}\NormalTok{(model)}\SpecialCharTok{$}\NormalTok{coefficients}
+\NormalTok{  sig\_terms }\OtherTok{\textless{}{-}} \FunctionTok{rownames}\NormalTok{(tbl)[tbl[,}\DecValTok{4}\NormalTok{] }\SpecialCharTok{\textless{}} \FloatTok{0.20}\NormalTok{]}
+\NormalTok{  sig\_terms }\OtherTok{\textless{}{-}}\NormalTok{ sig\_terms[sig\_terms }\SpecialCharTok{!=} \StringTok{"(Intercept)"}\NormalTok{]}
+
+\NormalTok{  matched }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{()}
+  \ControlFlowTok{for}\NormalTok{ (term }\ControlFlowTok{in}\NormalTok{ sig\_terms) \{}
+\NormalTok{    base }\OtherTok{\textless{}{-}}\NormalTok{ original\_vars[}\FunctionTok{sapply}\NormalTok{(original\_vars, }\ControlFlowTok{function}\NormalTok{(v) }\FunctionTok{startsWith}\NormalTok{(term, v))]}
+\NormalTok{    matched }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(matched, base)}
+\NormalTok{  \}}
+
+  \FunctionTok{unique}\NormalTok{(matched)}
+\NormalTok{\}}
+\NormalTok{sig\_dem }\OtherTok{\textless{}{-}} \FunctionTok{get\_sig}\NormalTok{(model\_a\_hx, orig\_dem)}
+\NormalTok{sig\_dep }\OtherTok{\textless{}{-}} \FunctionTok{get\_sig}\NormalTok{(model\_b\_hx, orig\_dep)}
+\NormalTok{sig\_aces }\OtherTok{\textless{}{-}} \FunctionTok{get\_sig}\NormalTok{(model\_c\_hx, orig\_aces)}
+
+\NormalTok{sig\_dem; sig\_dep; sig\_aces}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "ETHNICITY"
+\end{verbatim}
+
+\begin{verbatim}
+## [1] "CESDR_TOTAL_SUM"
+\end{verbatim}
+
+\begin{verbatim}
+## [1] "ACES___2"  "ACES___3"  "ACES___7"  "ACES___8"  "ACES___1"  "ACES___10"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Combine all predictors at α = 0.20}
+\NormalTok{all\_sig\_hx }\OtherTok{\textless{}{-}} \FunctionTok{unique}\NormalTok{(}\FunctionTok{c}\NormalTok{(sig\_dem, sig\_dep, sig\_aces))}
+\NormalTok{all\_sig\_hx}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "ETHNICITY"       "CESDR_TOTAL_SUM" "ACES___2"        "ACES___3"       
+## [5] "ACES___7"        "ACES___8"        "ACES___1"        "ACES___10"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{formula\_hx\_final }\OtherTok{\textless{}{-}} \FunctionTok{as.formula}\NormalTok{(}
+  \FunctionTok{paste}\NormalTok{(}\StringTok{"HX\_SUICIDE \textasciitilde{}"}\NormalTok{, }\FunctionTok{paste}\NormalTok{(all\_sig\_hx, }\AttributeTok{collapse =} \StringTok{" + "}\NormalTok{))}
+\NormalTok{)}
+
+\NormalTok{model\_hx\_final }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(formula\_hx\_final, }\AttributeTok{data =}\NormalTok{ data)}
+
+\FunctionTok{summary}\NormalTok{(model\_hx\_final)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = formula_hx_final, data = data)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -0.51035 -0.12176 -0.02784  0.02459  1.01653 
+## 
+## Coefficients:
+##                                Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)                   0.0333775  0.0355485   0.939  0.34819    
+## ETHNICITYNot Hispanic/Latino -0.0700702  0.0343779  -2.038  0.04202 *  
+## CESDR_TOTAL_SUM               0.0040330  0.0008685   4.644 4.31e-06 ***
+## ACES___2                      0.1656330  0.0327465   5.058 5.82e-07 ***
+## ACES___3                      0.0453193  0.0313620   1.445  0.14903    
+## ACES___7                     -0.0758090  0.0371180  -2.042  0.04160 *  
+## ACES___8                      0.0899596  0.0312015   2.883  0.00409 ** 
+## ACES___1                     -0.0253719  0.0404691  -0.627  0.53096    
+## ACES___10                     0.1254923  0.0565180   2.220  0.02681 *  
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.2621 on 537 degrees of freedom
+## Multiple R-squared:  0.1729, Adjusted R-squared:  0.1606 
+## F-statistic: 14.03 on 8 and 537 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(broom)}
+\FunctionTok{library}\NormalTok{(dplyr)}
+\FunctionTok{library}\NormalTok{(knitr)}
+\FunctionTok{library}\NormalTok{(kableExtra)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Attaching package: 'kableExtra'
+\end{verbatim}
+
+\begin{verbatim}
+## The following object is masked from 'package:dplyr':
+## 
+##     group_rows
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Create tidy table with confidence intervals}
+\NormalTok{final\_table\_hx }\OtherTok{\textless{}{-}} \FunctionTok{tidy}\NormalTok{(model\_hx\_final, }\AttributeTok{conf.int =} \ConstantTok{TRUE}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}
+    \AttributeTok{Estimate =} \FunctionTok{round}\NormalTok{(estimate, }\DecValTok{3}\NormalTok{),}
+    \AttributeTok{Std.Error =} \FunctionTok{round}\NormalTok{(std.error, }\DecValTok{3}\NormalTok{),}
+    \AttributeTok{t\_value =} \FunctionTok{round}\NormalTok{(statistic, }\DecValTok{3}\NormalTok{),}
+    \AttributeTok{p\_value =} \FunctionTok{case\_when}\NormalTok{(}
+\NormalTok{      p.value }\SpecialCharTok{\textless{}} \FloatTok{0.001} \SpecialCharTok{\textasciitilde{}} \StringTok{"\textless{}0.001"}\NormalTok{,}
+      \ConstantTok{TRUE} \SpecialCharTok{\textasciitilde{}} \FunctionTok{sprintf}\NormalTok{(}\StringTok{"\%.3f"}\NormalTok{, p.value)}
+\NormalTok{    ),}
+    \StringTok{\textasciigrave{}}\AttributeTok{95\% CI}\StringTok{\textasciigrave{}} \OtherTok{=} \FunctionTok{paste0}\NormalTok{(}\StringTok{"["}\NormalTok{, }\FunctionTok{round}\NormalTok{(conf.low, }\DecValTok{3}\NormalTok{), }\StringTok{", "}\NormalTok{, }\FunctionTok{round}\NormalTok{(conf.high, }\DecValTok{3}\NormalTok{), }\StringTok{"]"}\NormalTok{)}
+\NormalTok{  ) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{select}\NormalTok{(term, Estimate, Std.Error, t\_value, p\_value, }\StringTok{\textasciigrave{}}\AttributeTok{95\% CI}\StringTok{\textasciigrave{}}\NormalTok{)}
+
+\CommentTok{\# Clean variable labels}
+\NormalTok{final\_table\_hx}\SpecialCharTok{$}\NormalTok{term }\OtherTok{\textless{}{-}} \FunctionTok{recode}\NormalTok{(final\_table\_hx}\SpecialCharTok{$}\NormalTok{term,}
+    \StringTok{"(Intercept)"} \OtherTok{=} \StringTok{"Intercept"}\NormalTok{,}
+    \StringTok{"ETHNICITYNot Hispanic/Latino"} \OtherTok{=} \StringTok{"Ethnicity: Not Hispanic/Latino"}\NormalTok{,}
+    \StringTok{"CESDR\_TOTAL\_SUM"} \OtherTok{=} \StringTok{"Depression (CESD{-}R)"}\NormalTok{,}
+    \StringTok{"ACES\_\_\_2"} \OtherTok{=} \StringTok{"ACE 2"}\NormalTok{,}
+    \StringTok{"ACES\_\_\_3"} \OtherTok{=} \StringTok{"ACE 3"}\NormalTok{,}
+    \StringTok{"ACES\_\_\_7"} \OtherTok{=} \StringTok{"ACE 7"}\NormalTok{,}
+    \StringTok{"ACES\_\_\_8"} \OtherTok{=} \StringTok{"ACE 8"}\NormalTok{,}
+    \StringTok{"ACES\_\_\_1"} \OtherTok{=} \StringTok{"ACE 1"}\NormalTok{,}
+    \StringTok{"ACES\_\_\_10"} \OtherTok{=} \StringTok{"ACE 10"}
+\NormalTok{)}
+
+\CommentTok{\# Output decorated table}
+\FunctionTok{library}\NormalTok{(flextable)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Attaching package: 'flextable'
+\end{verbatim}
+
+\begin{verbatim}
+## The following objects are masked from 'package:kableExtra':
+## 
+##     as_image, footnote
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{ft }\OtherTok{\textless{}{-}} \FunctionTok{flextable}\NormalTok{(final\_table\_hx)}
+\NormalTok{ft }\OtherTok{\textless{}{-}} \FunctionTok{autofit}\NormalTok{(ft)}
+\NormalTok{ft }\OtherTok{\textless{}{-}} \FunctionTok{add\_header\_lines}\NormalTok{(ft, }\StringTok{"Table 2D. Final Multivariable Regression Model Predicting History of Suicide"}\NormalTok{)}
+
+\NormalTok{ft }\OtherTok{\textless{}{-}} \FunctionTok{footnote}\NormalTok{(}
+\NormalTok{  ft,}
+  \AttributeTok{i =} \DecValTok{1}\NormalTok{, }\AttributeTok{j =} \DecValTok{1}\NormalTok{,}
+  \AttributeTok{value =} \FunctionTok{as\_paragraph}\NormalTok{(}
+    \StringTok{"Note: Coefficients represent regression estimates predicting HX\_SUICIDE. Significance indicated by p{-}values."}
+\NormalTok{  ),}
+  \AttributeTok{ref\_symbols =} \StringTok{"a"}
+\NormalTok{)}
+
+\NormalTok{ft}
+\end{Highlighting}
+\end{Shaded}
+
+\global\setlength{\Oldarrayrulewidth}{\arrayrulewidth}
+
+\global\setlength{\Oldtabcolsep}{\tabcolsep}
+
+\setlength{\tabcolsep}{2pt}
+
+\renewcommand*{\arraystretch}{1.5}
+
+
+
+\providecommand{\ascline}[3]{\noalign{\global\arrayrulewidth #1}\arrayrulecolor[HTML]{#2}\cline{#3}}
+
+\begin{longtable}[c]{|p{2.27in}|p{0.88in}|p{0.90in}|p{0.78in}|p{0.82in}|p{1.32in}}
+
+
+
+\ascline{1.5pt}{666666}{1-6}
+
+\multicolumn{6}{>{\raggedright}m{\dimexpr 6.97in+10\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{Table\ 2D.\ Final\ Multivariable\ Regression\ Model\ Predicting\ History\ of\ Suicide}}}} \\
+
+\ascline{1.5pt}{666666}{1-6}
+
+
+
+\multicolumn{1}{>{\raggedright}m{\dimexpr 2.27in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{term}}}} & \multicolumn{1}{>{\raggedleft}m{\dimexpr 0.88in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{Estimate}}}} & \multicolumn{1}{>{\raggedleft}m{\dimexpr 0.9in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{Std.Error}}}} & \multicolumn{1}{>{\raggedleft}m{\dimexpr 0.78in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{t\_value}}}} & \multicolumn{1}{>{\raggedright}m{\dimexpr 0.82in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{p\_value}}}} & \multicolumn{1}{>{\raggedright}m{\dimexpr 1.32in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{95\%\ CI}}}} \\
+
+\ascline{1.5pt}{666666}{1-6}\endfirsthead 
+
+\ascline{1.5pt}{666666}{1-6}
+
+\multicolumn{6}{>{\raggedright}m{\dimexpr 6.97in+10\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{Table\ 2D.\ Final\ Multivariable\ Regression\ Model\ Predicting\ History\ of\ Suicide}}}} \\
+
+\ascline{1.5pt}{666666}{1-6}
+
+
+
+\multicolumn{1}{>{\raggedright}m{\dimexpr 2.27in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{term}}}} & \multicolumn{1}{>{\raggedleft}m{\dimexpr 0.88in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{Estimate}}}} & \multicolumn{1}{>{\raggedleft}m{\dimexpr 0.9in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{Std.Error}}}} & \multicolumn{1}{>{\raggedleft}m{\dimexpr 0.78in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{t\_value}}}} & \multicolumn{1}{>{\raggedright}m{\dimexpr 0.82in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{p\_value}}}} & \multicolumn{1}{>{\raggedright}m{\dimexpr 1.32in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{95\%\ CI}}}} \\
+
+\ascline{1.5pt}{666666}{1-6}\endhead
+
+
+
+\multicolumn{6}{>{\raggedright}m{\dimexpr 6.97in+10\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{\textsuperscript{a}}}}\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{Note:\ Coefficients\ represent\ regression\ estimates\ predicting\ HX\_SUICIDE.\ Significance\ indicated\ by\ p-values.}}}} \\
+
+\endlastfoot
+
+
+
+\multicolumn{1}{>{\raggedright}m{\dimexpr 2.27in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{Intercept}}}\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{\textsuperscript{a}}}}} & \multicolumn{1}{>{\raggedleft}m{\dimexpr 0.88in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{0.033}}}} & \multicolumn{1}{>{\raggedleft}m{\dimexpr 0.9in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{0.036}}}} & \multicolumn{1}{>{\raggedleft}m{\dimexpr 0.78in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{0.939}}}} & \multicolumn{1}{>{\raggedright}m{\dimexpr 0.82in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{0.348}}}} & \multicolumn{1}{>{\raggedright}m{\dimexpr 1.32in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{[-0.036,\ 0.103]}}}} \\
+
+
+
+
+
+\multicolumn{1}{>{\raggedright}m{\dimexpr 2.27in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{Ethnicity:\ Not\ Hispanic/Latino}}}} & \multicolumn{1}{>{\raggedleft}m{\dimexpr 0.88in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{-0.070}}}} & \multicolumn{1}{>{\raggedleft}m{\dimexpr 0.9in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{0.034}}}} & \multicolumn{1}{>{\raggedleft}m{\dimexpr 0.78in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{-2.038}}}} & \multicolumn{1}{>{\raggedright}m{\dimexpr 0.82in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{0.042}}}} & \multicolumn{1}{>{\raggedright}m{\dimexpr 1.32in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{[-0.138,\ -0.003]}}}} \\
+
+
+
+
+
+\multicolumn{1}{>{\raggedright}m{\dimexpr 2.27in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{Depression\ (CESD-R)}}}} & \multicolumn{1}{>{\raggedleft}m{\dimexpr 0.88in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{0.004}}}} & \multicolumn{1}{>{\raggedleft}m{\dimexpr 0.9in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{0.001}}}} & \multicolumn{1}{>{\raggedleft}m{\dimexpr 0.78in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{4.644}}}} & \multicolumn{1}{>{\raggedright}m{\dimexpr 0.82in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{<0.001}}}} & \multicolumn{1}{>{\raggedright}m{\dimexpr 1.32in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{[0.002,\ 0.006]}}}} \\
+
+
+
+
+
+\multicolumn{1}{>{\raggedright}m{\dimexpr 2.27in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{ACE\ 2}}}} & \multicolumn{1}{>{\raggedleft}m{\dimexpr 0.88in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{0.166}}}} & \multicolumn{1}{>{\raggedleft}m{\dimexpr 0.9in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{0.033}}}} & \multicolumn{1}{>{\raggedleft}m{\dimexpr 0.78in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{5.058}}}} & \multicolumn{1}{>{\raggedright}m{\dimexpr 0.82in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{<0.001}}}} & \multicolumn{1}{>{\raggedright}m{\dimexpr 1.32in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{[0.101,\ 0.23]}}}} \\
+
+
+
+
+
+\multicolumn{1}{>{\raggedright}m{\dimexpr 2.27in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{ACE\ 3}}}} & \multicolumn{1}{>{\raggedleft}m{\dimexpr 0.88in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{0.045}}}} & \multicolumn{1}{>{\raggedleft}m{\dimexpr 0.9in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{0.031}}}} & \multicolumn{1}{>{\raggedleft}m{\dimexpr 0.78in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{1.445}}}} & \multicolumn{1}{>{\raggedright}m{\dimexpr 0.82in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{0.149}}}} & \multicolumn{1}{>{\raggedright}m{\dimexpr 1.32in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{[-0.016,\ 0.107]}}}} \\
+
+
+
+
+
+\multicolumn{1}{>{\raggedright}m{\dimexpr 2.27in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{ACE\ 7}}}} & \multicolumn{1}{>{\raggedleft}m{\dimexpr 0.88in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{-0.076}}}} & \multicolumn{1}{>{\raggedleft}m{\dimexpr 0.9in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{0.037}}}} & \multicolumn{1}{>{\raggedleft}m{\dimexpr 0.78in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{-2.042}}}} & \multicolumn{1}{>{\raggedright}m{\dimexpr 0.82in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{0.042}}}} & \multicolumn{1}{>{\raggedright}m{\dimexpr 1.32in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{[-0.149,\ -0.003]}}}} \\
+
+
+
+
+
+\multicolumn{1}{>{\raggedright}m{\dimexpr 2.27in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{ACE\ 8}}}} & \multicolumn{1}{>{\raggedleft}m{\dimexpr 0.88in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{0.090}}}} & \multicolumn{1}{>{\raggedleft}m{\dimexpr 0.9in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{0.031}}}} & \multicolumn{1}{>{\raggedleft}m{\dimexpr 0.78in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{2.883}}}} & \multicolumn{1}{>{\raggedright}m{\dimexpr 0.82in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{0.004}}}} & \multicolumn{1}{>{\raggedright}m{\dimexpr 1.32in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{[0.029,\ 0.151]}}}} \\
+
+
+
+
+
+\multicolumn{1}{>{\raggedright}m{\dimexpr 2.27in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{ACE\ 1}}}} & \multicolumn{1}{>{\raggedleft}m{\dimexpr 0.88in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{-0.025}}}} & \multicolumn{1}{>{\raggedleft}m{\dimexpr 0.9in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{0.040}}}} & \multicolumn{1}{>{\raggedleft}m{\dimexpr 0.78in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{-0.627}}}} & \multicolumn{1}{>{\raggedright}m{\dimexpr 0.82in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{0.531}}}} & \multicolumn{1}{>{\raggedright}m{\dimexpr 1.32in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{[-0.105,\ 0.054]}}}} \\
+
+
+
+
+
+\multicolumn{1}{>{\raggedright}m{\dimexpr 2.27in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{ACE\ 10}}}} & \multicolumn{1}{>{\raggedleft}m{\dimexpr 0.88in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{0.125}}}} & \multicolumn{1}{>{\raggedleft}m{\dimexpr 0.9in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{0.057}}}} & \multicolumn{1}{>{\raggedleft}m{\dimexpr 0.78in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{2.220}}}} & \multicolumn{1}{>{\raggedright}m{\dimexpr 0.82in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{0.027}}}} & \multicolumn{1}{>{\raggedright}m{\dimexpr 1.32in+0\tabcolsep}}{\textcolor[HTML]{000000}{\fontsize{11}{11}\selectfont{\global\setmainfont{Arial}{[0.014,\ 0.237]}}}} \\
+
+\ascline{1.5pt}{666666}{1-6}
+
+
+
+\end{longtable}
+
+
+
+\arrayrulecolor[HTML]{000000}
+
+\global\setlength{\arrayrulewidth}{\Oldarrayrulewidth}
+
+\global\setlength{\tabcolsep}{\Oldtabcolsep}
+
+\renewcommand*{\arraystretch}{1}
+
+The final multivariable model, which includes all the factors chosen at
+α = 0.20, explains around 17\% of the differences in suicide history,
+which is better than any of the individual models. Depression continues
+to be a robust and substantial predictor, underscoring the importance of
+psychological distress in comprehending suicide risk. Certain ACE
+components, specifically ACEs 2, 7, 8, and 10, maintained their
+significance, indicating that particular childhood traumas persist in
+affecting suicide history, even after controlling for depression and
+demographic variables. Ethnicity continued to be a prominent demographic
+variable. These results indicate that a history of suicide is affected
+by current mental health and past life challenges.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# ============================}
+\CommentTok{\# PART E}
+\CommentTok{\# ============================}
+\CommentTok{\# Diagnostics}
+\FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow=}\FunctionTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{,}\DecValTok{2}\NormalTok{))}
+\FunctionTok{plot}\NormalTok{(model\_hx\_final)}
+\end{Highlighting}
+\end{Shaded}
+
+\pandocbounded{\includegraphics[keepaspectratio]{Activity_4_files/figure-latex/unnamed-chunk-12-1.pdf}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow=}\FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{1}\NormalTok{))}
+
+\CommentTok{\# Normality test}
+\FunctionTok{shapiro.test}\NormalTok{(}\FunctionTok{resid}\NormalTok{(model\_hx\_final))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Shapiro-Wilk normality test
+## 
+## data:  resid(model_hx_final)
+## W = 0.71189, p-value < 2.2e-16
+\end{verbatim}
+
+The residual diagnostics indicate that the model does not completely
+satisfy the assumption of normality, as validated by the Shapiro-Wilk
+test (p \textless{} .00000000000000022). This is to be expected because
+HX\_SUICIDE is almost binary (0/1-like), which means that complete
+normal residuals are not statistically possible. Even yet, the model
+still gives useful information on what causes people to commit suicide.
+The residual plot does not show any strong signs of heteroscedasticity
+or extreme outliers, which means that the model is quite stable.
+Overall, the model is still useful for finding crucial correlates, even
+though the normalcy assumption isn't ideal.
+
+\section{QUESTION 3.}\label{question-3.}
+
+\subsection{From Model 1d (SABCS Final
+Model)}\label{from-model-1d-sabcs-final-model}
+
+✔ Significant Predictor: CESDR\_TOTAL\_SUM
+
+Beta: 0.18484
+
+Interpretation: Each additional point in depression score is associated
+with a 0.18-point increase in suicidal risk. This means depressive
+symptoms are a strong, meaningful predictor of higher SABCS scores.
+
+✔ Non-significant Predictor: ACES\_1
+
+Beta: 0.11834
+
+Interpretation: Although ACES\_1 has a small positive coefficient, it is
+not statistically significant, meaning it does not meaningfully predict
+suicidal risk. Any observed relationship may simply be due to chance.
+
+\subsection{From Model 2d (HX\_SUICIDE Final
+Model)}\label{from-model-2d-hx_suicide-final-model}
+
+✔ Significant Predictor: CESDR\_TOTAL\_SUM
+
+Beta: 0.004033
+
+Interpretation: Each 1-point increase in depression score is associated
+with a small increase in suicide history score, meaning individuals with
+more depressive symptoms are more likely to report a prior suicide
+attempt or ideation.
+
+✔ Non-significant Predictor: ACES\_1
+
+Beta: --0.02537
+
+Interpretation: ACES\_1 is not statistically significant, indicating
+that this type of childhood adversity does not meaningfully predict past
+suicidal behavior when other variables are considered.
+
+\section{QUESTION 4.}\label{question-4.}
+
+\subsection{1. Study Design}\label{study-design}
+
+The structure of this dataset aligns most closely with a cross-sectional
+study, since all variables---life experiences, mental health measures,
+and suicide-related outcomes---were collected at a single point in time.
+It feels like a snapshot of each participant's life at that moment,
+capturing their history and current emotional state simultaneously.
+Because nothing is measured across time, it does not function like a
+cohort or case-control design.
+
+\subsection{2. Limitation (1--2 sentences, humanized
+English)}\label{limitation-12-sentences-humanized-english}
+
+A major limitation of this ``single-moment'' approach is that it cannot
+reveal which experiences came first, making it hard to understand the
+true sequence of events. Without a sense of timing, any relationship we
+see may reflect correlation rather than a meaningful causal story.
+
+\subsection{3. How to Redesign the Study (3--4 sentences, humanized
+English)}\label{how-to-redesign-the-study-34-sentences-humanized-english}
+
+To address this issue, the study could be redesigned as a longitudinal
+cohort, where participants are followed over time and their emotional
+and environmental changes are recorded as they unfold. Tracking people
+across meaningful life stages would help establish whether depression,
+stress, or adversity occur before shifts in suicide risk. This design
+respects the fact that human experiences evolve rather than appear all
+at once. By observing these changes directly, we gain a clearer and more
+compassionate understanding of how struggles develop and how risks
+emerge over time.
+
+\end{document}

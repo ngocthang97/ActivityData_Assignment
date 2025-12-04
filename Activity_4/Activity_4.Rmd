@@ -1,0 +1,404 @@
+---
+title: "Thang_Activity 4"
+output:
+  pdf_document:
+    latex_engine: xelatex
+    keep_tex: true
+  word_document: default
+date: "2025-11-09"
+header-includes:
+- \usepackage{caption}
+- \captionsetup[table]{justification=centering}
+always_allow_html: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+## Set global CRAN mirror
+options(repos = c(CRAN = "https://cran.rstudio.com/"))
+
+## Install the tableone package
+install.packages("tableone")
+## Load the required packages
+
+library(tableone)
+library(readxl)
+library(dplyr)
+library(janitor)
+library(knitr)
+
+setwd("C:/Users/Thang/OneDrive/Documents/ActivityData_Assignment/Activity_4")
+data <- read_excel("SuicideRisk_Data.xlsx")
+```
+# QUESTION 1. 
+```{r}
+# ============================
+# PART A: SABCS ~ Demographics
+# ============================
+
+# Convert categorical variables to factors
+data$GENDER    <- factor(data$GENDER)
+data$RACE      <- factor(data$RACE)
+data$ETHNICITY <- factor(data$ETHNICITY)
+data$INCOME    <- factor(data$INCOME)
+
+model_a <- lm(SABCS_TOTAL_SUM ~ AGE + GENDER + RACE + ETHNICITY + INCOME, data = data)
+
+summary(model_a)
+
+# Diagnostics
+par(mfrow=c(2,2))
+plot(model_a)
+
+# Reset plotting
+par(mfrow=c(1,1))
+```
+The demographic model accounts for a mere 3.7% of the variation in suicidal risk, indicating that demographics alone do not serve as robust predictors of SABCS scores.  Age has a small negative correlation, indicating a somewhat diminished suicide risk among older participants; nevertheless, the effect is minor.  Ethnicity (Not Hispanic/Latino) and low income (<$30,000) exhibit marginal correlations with SABCS results, however none serve as robust predictors.  The majority of demographic factors, such as gender and ethnicity, lack statistical significance.  In general, demographic traits don't give us much information on how likely someone in this group is to commit suicide.
+
+```{r}
+# ============================
+# PART B: SABCS ~ Depression
+# ============================
+
+model_b <- lm(SABCS_TOTAL_SUM ~ CESDR_TOTAL_SUM, data = data)
+
+summary(model_b)
+
+# Diagnostics
+par(mfrow=c(2,2))
+plot(model_b)
+par(mfrow=c(1,1))
+```
+There is a substantial and significant positive relationship between depressive symptoms (CESD-R scores) and suicide risk, which means that higher depression levels are linked to higher SABCS scores.  The model elucidates around 35% of the variance in suicide risk, far surpassing the demographic model.  In this sample, depression is a strong indicator of the probability of suicide.
+
+```{r}
+# ============================
+# PART C: SABCS ~ ACES 1–10
+# ============================
+
+aces_vars <- paste0("ACES___", 1:10)
+
+model_c <- lm(as.formula(
+  paste("SABCS_TOTAL_SUM ~", paste(aces_vars, collapse = " + "))
+), data = data)
+
+summary(model_c)
+
+# Diagnostics
+par(mfrow=c(2,2))
+plot(model_c)
+par(mfrow=c(1,1))
+
+# Extract coefficients with p < 0.20
+get_sig <- function(model, original_vars) {
+  tbl <- summary(model)$coefficients
+  sig_terms <- rownames(tbl)[tbl[,4] < 0.20]   # significant rows (dummy names)
+  sig_terms <- sig_terms[sig_terms != "(Intercept)"]
+
+  matched <- c()
+  for (term in sig_terms) {
+    base <- original_vars[sapply(original_vars, function(v) startsWith(term, v))]
+    matched <- c(matched, base)
+  }
+
+  unique(matched)
+}
+orig_a <- c("AGE", "GENDER", "RACE", "ETHNICITY", "INCOME")
+orig_b <- c("CESDR_TOTAL_SUM")
+orig_c <- paste0("ACES___", 1:10)
+
+sig_a <- get_sig(model_a, orig_a)
+sig_b <- get_sig(model_b, orig_b)
+sig_c <- get_sig(model_c, orig_c)
+
+sig_a; sig_b; sig_c
+```
+Several ACE categories exhibit significant correlations with suicide risk, indicating that specific forms of childhood adversity are closely linked to elevated SABCS scores.  In particular, ACEs 2, 3, and 8 are connected to a much increased risk of suicide, while ACE 9 shows a negative link.  Most other ACE items do not have significant impacts, indicating that not all forms of childhood adversity equally influence suicidal thoughts or behaviors.  The model accounts for around 14–15% of the variation in suicide risk, suggesting that childhood events are significant, though not the sole factor.  Overall, ACEs help predict the risk of suicide, although the effects depend on the sort of adversity.
+
+```{r}
+# ============================
+# PART D
+# ============================
+all_sig <- unique(c(sig_a, sig_b, sig_c))
+
+formula_d <- as.formula(
+  paste("SABCS_TOTAL_SUM ~", paste(all_sig, collapse = " + "))
+)
+
+model_d <- lm(formula_d, data = data)
+summary(model_d)
+par(mfrow=c(2,2)); plot(model_d)
+
+```
+The combined model elucidates approximately 41% of the heterogeneity in suicide risk, representing a significant enhancement over the separate demographic and ACE models.  Depression (CESDR scores) continues to be the most significant predictor, even after controlling for demographics and childhood adversity, demonstrating its critical role in suicidal risk.  A number of ACE categories (ACES 2, 3, and 9) continue to exhibit substantial correlations, indicating that particular childhood events still have major implications beyond depression.  Age and ethnicity exhibit minor yet statistically significant effects, whereas wealth demonstrates less influence.  In general, integrating demographics, depression, and ACEs gives a better picture of the risk of suicide.
+
+```{r}
+# ============================
+# PART E: sqrt(SABCS) model
+# ============================
+
+# Create transformed variable
+data$SABCS_sqrt <- sqrt(data$SABCS_TOTAL_SUM)
+
+# Build formula using same predictors as Part D
+formula_e <- as.formula(
+  paste("SABCS_sqrt ~", paste(all_sig, collapse = " + "))
+)
+
+# Fit model
+model_e <- lm(formula_e, data = data)
+
+# Show results
+summary(model_e)
+
+# Diagnostics
+par(mfrow=c(2,2))
+plot(model_e)
+par(mfrow=c(1,1))
+```
+Following the square-root transformation, the model exhibits analogous patterns of important predictors as shown in Part D, with depression persisting as the most substantial factor linked to suicide risk.  ACE items 2, 3, 8, and 9 still have significant effects, but the sizes of the effects are reduced because the transformation has made the outcome smaller.  The residuals are more evenly distributed and have a smaller range, which means that the transformation makes the data more normal and stabilizes the variance.  The converted model fits the data better overall, while still keeping the primary associations that were shown in the untransformed model.
+
+```{r}
+# ============================
+# PART F: Compare Model D vs E
+# ============================
+
+# Compare AIC & BIC
+AIC(model_d, model_e)
+BIC(model_d, model_e)
+
+# Residual histograms
+par(mfrow=c(1,2))
+hist(resid(model_d), main="Residuals: Model D", xlab="", col="lightblue")
+hist(resid(model_e), main="Residuals: Model E (sqrt)", xlab="", col="lightgreen")
+par(mfrow=c(1,1))
+
+# Shapiro-Wilk normality test
+shapiro.test(resid(model_d))
+shapiro.test(resid(model_e))
+
+# Residual vs Fitted comparison
+par(mfrow=c(1,2))
+plot(model_d$fitted.values, resid(model_d),
+     main="Model D Residual vs Fitted",
+     xlab="Fitted", ylab="Residuals")
+
+plot(model_e$fitted.values, resid(model_e),
+     main="Model E Residual vs Fitted",
+     xlab="Fitted", ylab="Residuals")
+par(mfrow=c(1,1))
+```
+The square-root-transformed model (Model E) has much lower AIC and BIC values than the untransformed model (Model D). This means that it fits the data better.  The Shapiro–Wilk test also shows that the residuals from Model E are substantially closer to a normal distribution (p ≈ 0.018) than those from Model D (p < 0.00000000000001). This means that Model E is more normal.  Even though the transformed model is harder to understand because the coefficients are based on the square root of suicide risk instead of the raw score, it fits the statistical assumptions better.  Taking into account the trade-off between interpretability and statistical validity, Model E is a stronger choice because it fits better and is more trustworthy.
+
+
+# QUESTION 2. 
+
+```{r}
+# ============================
+# PART A: HX_SUICIDE ~ Demographics
+# ============================
+
+model_a_hx <- lm(HX_SUICIDE ~ AGE + GENDER + RACE + ETHNICITY + INCOME, data = data)
+
+summary(model_a_hx)
+
+# Diagnostics
+par(mfrow=c(2,2))
+plot(model_a_hx)
+par(mfrow=c(1,1))
+```
+The demographic model elucidates a mere 2% of the diversity in the history of suicide, as indicated by a R² value of approximately 2%.  Of all the demographic characteristics, only ethnicity (Not Hispanic/Latino) had a statistically significant link. People in this category had slightly lower suicide history scores.  Other demographic factors, such as age, gender, ethnicity, and wealth, did not significantly forecast suicide history.  In general, demographic traits by themselves are not good indicators of whether someone has ever thought about or attempted suicide.
+
+```{r}
+# ============================
+# PART B: HX_SUICIDE ~ Depression
+# ============================
+
+model_b_hx <- lm(HX_SUICIDE ~ CESDR_TOTAL_SUM, data = data)
+
+summary(model_b_hx)
+
+# Diagnostics
+par(mfrow=c(2,2))
+plot(model_b_hx)
+par(mfrow=c(1,1))
+```
+Depression exhibits a substantial positive correlation with suicide history, suggesting that persons with elevated depressive symptoms are more inclined to disclose a previous suicide attempt or intention.  The overall R² is only about 7%, but this is still a big step up from the demographic-only model.  These results indicate that depression is a significant psychological factor associated with suicide history, even when analyzed in isolation.  The diagnostic plots show that the residual patterns are rather consistent, but the outcome distribution is still not quite normal because it is a binary-like variable.
+
+
+```{r}
+# ============================
+# PART C: HX_SUICIDE ~ ACES 1–10
+# ============================
+
+aces_vars <- paste0("ACES___", 1:10)
+
+model_c_hx <- lm(as.formula(
+  paste("HX_SUICIDE ~", paste(aces_vars, collapse = " + "))
+), data = data)
+
+summary(model_c_hx)
+
+# Diagnostics
+par(mfrow=c(2,2))
+plot(model_c_hx)
+par(mfrow=c(1,1))
+```
+Multiple ACE items were significantly associated with suicide history, including ACEs 2, 3, and 8. This indicates that certain types of childhood adversity—particularly emotional, physical, or household-related trauma—are linked to a higher likelihood of past suicidal behaviors. The model explained about 13% of the variation, suggesting that ACEs play a meaningful but not exclusive role in predicting suicide history. Several ACE items such as ACE 1, 4, and 5 were not significant, showing that not all childhood experiences contribute equally.
+
+```{r}
+# ============================
+# PART D
+# ============================
+orig_dem <- c("AGE", "GENDER", "RACE", "ETHNICITY", "INCOME")
+orig_dep <- c("CESDR_TOTAL_SUM")
+orig_aces <- paste0("ACES___", 1:10)
+get_sig <- function(model, original_vars) {
+  tbl <- summary(model)$coefficients
+  sig_terms <- rownames(tbl)[tbl[,4] < 0.20]
+  sig_terms <- sig_terms[sig_terms != "(Intercept)"]
+
+  matched <- c()
+  for (term in sig_terms) {
+    base <- original_vars[sapply(original_vars, function(v) startsWith(term, v))]
+    matched <- c(matched, base)
+  }
+
+  unique(matched)
+}
+sig_dem <- get_sig(model_a_hx, orig_dem)
+sig_dep <- get_sig(model_b_hx, orig_dep)
+sig_aces <- get_sig(model_c_hx, orig_aces)
+
+sig_dem; sig_dep; sig_aces
+# Combine all predictors at α = 0.20
+all_sig_hx <- unique(c(sig_dem, sig_dep, sig_aces))
+all_sig_hx
+
+formula_hx_final <- as.formula(
+  paste("HX_SUICIDE ~", paste(all_sig_hx, collapse = " + "))
+)
+
+model_hx_final <- lm(formula_hx_final, data = data)
+
+summary(model_hx_final)
+
+library(broom)
+library(dplyr)
+library(knitr)
+library(kableExtra)
+
+# Create tidy table with confidence intervals
+final_table_hx <- tidy(model_hx_final, conf.int = TRUE) %>%
+  mutate(
+    Estimate = round(estimate, 3),
+    Std.Error = round(std.error, 3),
+    t_value = round(statistic, 3),
+    p_value = case_when(
+      p.value < 0.001 ~ "<0.001",
+      TRUE ~ sprintf("%.3f", p.value)
+    ),
+    `95% CI` = paste0("[", round(conf.low, 3), ", ", round(conf.high, 3), "]")
+  ) %>%
+  select(term, Estimate, Std.Error, t_value, p_value, `95% CI`)
+
+# Clean variable labels
+final_table_hx$term <- recode(final_table_hx$term,
+    "(Intercept)" = "Intercept",
+    "ETHNICITYNot Hispanic/Latino" = "Ethnicity: Not Hispanic/Latino",
+    "CESDR_TOTAL_SUM" = "Depression (CESD-R)",
+    "ACES___2" = "ACE 2",
+    "ACES___3" = "ACE 3",
+    "ACES___7" = "ACE 7",
+    "ACES___8" = "ACE 8",
+    "ACES___1" = "ACE 1",
+    "ACES___10" = "ACE 10"
+)
+
+# Output decorated table
+library(flextable)
+
+ft <- flextable(final_table_hx)
+ft <- autofit(ft)
+ft <- add_header_lines(ft, "Table 2D. Final Multivariable Regression Model Predicting History of Suicide")
+
+ft <- footnote(
+  ft,
+  i = 1, j = 1,
+  value = as_paragraph(
+    "Note: Coefficients represent regression estimates predicting HX_SUICIDE. Significance indicated by p-values."
+  ),
+  ref_symbols = "a"
+)
+
+ft
+
+
+```
+The final multivariable model, which includes all the factors chosen at α = 0.20, explains around 17% of the differences in suicide history, which is better than any of the individual models.  Depression continues to be a robust and substantial predictor, underscoring the importance of psychological distress in comprehending suicide risk.  Certain ACE components, specifically ACEs 2, 7, 8, and 10, maintained their significance, indicating that particular childhood traumas persist in affecting suicide history, even after controlling for depression and demographic variables.  Ethnicity continued to be a prominent demographic variable.  These results indicate that a history of suicide is affected by current mental health and past life challenges.
+
+```{r}
+# ============================
+# PART E
+# ============================
+# Diagnostics
+par(mfrow=c(2,2))
+plot(model_hx_final)
+par(mfrow=c(1,1))
+
+# Normality test
+shapiro.test(resid(model_hx_final))
+```
+The residual diagnostics indicate that the model does not completely satisfy the assumption of normality, as validated by the Shapiro-Wilk test (p < .00000000000000022).  This is to be expected because HX_SUICIDE is almost binary (0/1-like), which means that complete normal residuals are not statistically possible.  Even yet, the model still gives useful information on what causes people to commit suicide.  The residual plot does not show any strong signs of heteroscedasticity or extreme outliers, which means that the model is quite stable.  Overall, the model is still useful for finding crucial correlates, even though the normalcy assumption isn't ideal.
+
+
+# QUESTION 3. 
+
+## From Model 1d (SABCS Final Model)
+
+✔ Significant Predictor: CESDR_TOTAL_SUM
+
+Beta: 0.18484
+
+Interpretation:
+Each additional point in depression score is associated with a 0.18-point increase in suicidal risk. This means depressive symptoms are a strong, meaningful predictor of higher SABCS scores.
+
+✔ Non-significant Predictor: ACES_1
+
+Beta: 0.11834
+
+Interpretation:
+Although ACES_1 has a small positive coefficient, it is not statistically significant, meaning it does not meaningfully predict suicidal risk. Any observed relationship may simply be due to chance.
+
+## From Model 2d (HX_SUICIDE Final Model)
+✔ Significant Predictor: CESDR_TOTAL_SUM
+
+Beta: 0.004033
+
+Interpretation:
+Each 1-point increase in depression score is associated with a small increase in suicide history score, meaning individuals with more depressive symptoms are more likely to report a prior suicide attempt or ideation.
+
+✔ Non-significant Predictor: ACES_1
+
+Beta: –0.02537
+
+Interpretation:
+ACES_1 is not statistically significant, indicating that this type of childhood adversity does not meaningfully predict past suicidal behavior when other variables are considered.
+
+
+# QUESTION 4. 
+
+## 1. Study Design 
+
+The structure of this dataset aligns most closely with a cross-sectional study, since all variables—life experiences, mental health measures, and suicide-related outcomes—were collected at a single point in time. It feels like a snapshot of each participant’s life at that moment, capturing their history and current emotional state simultaneously. Because nothing is measured across time, it does not function like a cohort or case-control design.
+
+## 2. Limitation (1–2 sentences, humanized English)
+
+A major limitation of this “single-moment” approach is that it cannot reveal which experiences came first, making it hard to understand the true sequence of events. Without a sense of timing, any relationship we see may reflect correlation rather than a meaningful causal story.
+
+## 3. How to Redesign the Study (3–4 sentences, humanized English)
+
+To address this issue, the study could be redesigned as a longitudinal cohort, where participants are followed over time and their emotional and environmental changes are recorded as they unfold. Tracking people across meaningful life stages would help establish whether depression, stress, or adversity occur before shifts in suicide risk. This design respects the fact that human experiences evolve rather than appear all at once. By observing these changes directly, we gain a clearer and more compassionate understanding of how struggles develop and how risks emerge over time.
